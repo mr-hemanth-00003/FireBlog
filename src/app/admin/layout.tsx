@@ -1,6 +1,6 @@
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarTrigger, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarContent, SidebarInset } from "@/components/ui/sidebar";
 import { Header } from "@/components/header";
-import { Home, Newspaper, PenSquare } from "lucide-react";
+import { Home, Newspaper, PenSquare, Sparkles } from "lucide-react";
 
 export default function AdminLayout({
   children,
@@ -35,7 +35,7 @@ export default function AdminLayout({
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <SidebarMenuButton href="/admin/tag-suggester" tooltip="AI Tagger">
-                                    <PenSquare />
+                                    <Sparkles />
                                     <span>AI Tagger</span>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
