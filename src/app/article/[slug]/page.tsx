@@ -38,9 +38,9 @@ export default function ArticlePage({ params }: Props) {
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow py-8 md:py-12">
-        <article>
+        <article className="animate-fade-in-up">
           <div className="container mx-auto px-4 md:px-6 max-w-4xl">
-            <header className="mb-8 md:mb-12 text-center">
+            <header className="mb-8 md:mb-12 text-center animate-fade-in">
               <h1 className="text-3xl md:text-5xl font-bold font-headline leading-tight mb-4">
                 {post.title}
               </h1>
@@ -57,7 +57,7 @@ export default function ArticlePage({ params }: Props) {
               </div>
             </header>
             
-            <Card className="overflow-hidden mb-8 md:mb-12 shadow-lg">
+            <Card className="overflow-hidden mb-8 md:mb-12 shadow-lg animate-fade-in-up animation-delay-200">
               <Image
                 src={post.imageUrl}
                 alt={post.title}
@@ -70,20 +70,22 @@ export default function ArticlePage({ params }: Props) {
             </Card>
 
             <div
-              className="prose-styles"
+              className="prose-styles animate-fade-in-up animation-delay-400"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
 
             {/* <!-- Ad Placeholder 3 --> */}
-            <Card className="my-8 md:my-12 p-4 text-center">
+            <Card className="my-8 md:my-12 p-4 text-center animate-fade-in">
                 <p className="text-sm text-muted-foreground tracking-widest">ADVERTISEMENT</p>
             </Card>
 
-            <footer className="mt-12 pt-8 border-t">
+            <footer className="mt-12 pt-8 border-t animate-fade-in-up animation-delay-600">
               <p className="font-semibold mb-3">Tags:</p>
               <div className="flex flex-wrap gap-2">
                 {post.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="px-3 py-1">{tag}</Badge>
+                    <Badge key={tag} variant="secondary" className="px-3 py-1 cursor-pointer hover:bg-primary/20 transition-all">
+                      {tag}
+                    </Badge>
                 ))}
               </div>
             </footer>

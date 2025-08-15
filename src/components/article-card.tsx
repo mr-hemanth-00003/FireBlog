@@ -12,15 +12,15 @@ interface ArticleCardProps {
 
 export function ArticleCard({ post }: ArticleCardProps) {
   return (
-    <Card className="flex flex-col overflow-hidden h-full transition-shadow duration-300 hover:shadow-xl">
+    <Card className="flex flex-col overflow-hidden h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <CardHeader className="p-0 border-b">
-        <Link href={`/article/${post.slug}`} className="block" aria-label={`Read more about ${post.title}`}>
+        <Link href={`/article/${post.slug}`} className="block overflow-hidden" aria-label={`Read more about ${post.title}`}>
           <Image
             src={post.imageUrl}
             alt={post.title}
             width={600}
             height={400}
-            className="w-full h-48 object-cover aspect-video"
+            className="w-full h-48 object-cover aspect-video transition-transform duration-500 ease-in-out hover:scale-105"
             data-ai-hint={post.imageHint}
           />
         </Link>

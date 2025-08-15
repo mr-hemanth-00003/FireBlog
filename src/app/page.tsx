@@ -31,13 +31,13 @@ export default function Home() {
       <main className="flex-grow">
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
           {/* Ad Placeholder */}
-          <Card className="mb-8 p-4 text-center">
+          <Card className="mb-8 p-4 text-center animate-fade-in">
             <p className="text-sm text-muted-foreground tracking-widest">ADVERTISEMENT</p>
             {/* <!-- Ad Placeholder 1 --> */}
           </Card>
 
           {/* Featured Post */}
-          <section className="mb-12 md:mb-16">
+          <section className="mb-12 md:mb-16 animate-fade-in-up animation-delay-200">
             <Card className="overflow-hidden">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                   <div className="p-8 md:p-12 order-2 md:order-1">
@@ -60,7 +60,7 @@ export default function Home() {
           </section>
           
           {/* Latest Posts */}
-          <section>
+          <section className="animate-fade-in-up animation-delay-400">
             <h2 className="text-2xl md:text-3xl font-bold mb-8 font-headline text-center">Latest Posts</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredPosts.map((post) => (
