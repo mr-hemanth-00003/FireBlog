@@ -1,10 +1,9 @@
 
-
 'use client';
 
 import * as React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   SidebarProvider, 
   Sidebar, 
@@ -23,10 +22,9 @@ import {
   SidebarInset,
   useSidebar
 } from '@/components/ui/sidebar';
-import { Feather, LayoutDashboard, FileText, Settings, Bot, Home, LogOut } from 'lucide-react';
+import { Feather, LayoutDashboard, FileText, Settings, Bot, Home, LogOut, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,8 +32,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Toaster } from "@/components/ui/toaster";
+} from "@/components/ui/dropdown-menu";
+import { useToast } from '@/hooks/use-toast';
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -70,6 +70,27 @@ const navItems = [
 ]
 
 function UserMenu() {
+    const { toast } = useToast();
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            toast({
+                title: 'Logged Out',
+                description: 'You have been successfully logged out.',
+            });
+            router.push('/admin/login');
+        } catch (error) {
+            console.error("Error signing out: ", error);
+            toast({
+                title: 'Error',
+                description: 'Failed to log out. Please try again.',
+                variant: 'destructive',
+            });
+        }
+    }
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -85,7 +106,7 @@ function UserMenu() {
                 <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">Admin</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                    admin@fireblog.com
+                    basumgarianand109@gmail.com
                     </p>
                 </div>
                 </DropdownMenuLabel>
@@ -97,7 +118,7 @@ function UserMenu() {
                      <Link href="/admin/settings"><Settings className="mr-2 h-4 w-4" /><span>Settings</span></Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                 </DropdownMenuItem>
@@ -174,17 +195,57 @@ function AdminSidebar() {
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  return (
-    <SidebarProvider>
-        <div className="flex min-h-screen w-full">
-            <AdminSidebar />
-            <div className="flex flex-col flex-1">
-                 <AdminHeader />
-                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40">
-                    {children}
-                 </main>
+  const router = useRouter();
+  const pathname = usePathname();
+  const [user, setUser] = React.useState<User | null>(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setLoading(false);
+      if (currentUser) {
+        setUser(currentUser);
+        if (pathname === '/admin/login') {
+            router.replace('/admin/dashboard');
+        }
+      } else {
+        setUser(null);
+        if (pathname !== '/admin/login') {
+            router.replace('/admin/login');
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router, pathname]);
+
+  if (loading || (!user && pathname !== '/admin/login')) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user && pathname === '/admin/login') {
+      return <>{children}</>
+  }
+
+  if(user) {
+    return (
+        <SidebarProvider>
+            <div className="flex min-h-screen w-full">
+                <AdminSidebar />
+                <div className="flex flex-col flex-1">
+                    <AdminHeader />
+                    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40">
+                        {children}
+                    </main>
+                </div>
             </div>
-        </div>
-    </SidebarProvider>
-  );
+        </SidebarProvider>
+    );
+  }
+
+  return null;
 }

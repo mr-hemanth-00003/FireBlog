@@ -3,22 +3,27 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Rules for posts
+    
+    // Public read access for posts and team members
     match /posts/{postId} {
-      // Anyone can read posts
       allow read: if true;
-      // Allow anyone to create, update, delete for now.
-      // TODO: Secure this to only allow authenticated admin users
-      allow write: if true;
+    }
+    match /team/{memberId} {
+      allow read: if true;
     }
 
-    // Rules for team members
+    // Allow listing collections for authenticated users
+    match /{document=**} {
+       allow list: if request.auth != null;
+    }
+
+    // Allow write access only for authenticated users
+    match /posts/{postId} {
+      allow write: if request.auth != null;
+    }
+
     match /team/{memberId} {
-       // Anyone can read team member info
-      allow read: if true;
-      // Nobody can write to the team collection from the client
-      allow write: if false;
+      allow write: if request.auth != null;
     }
   }
 }
