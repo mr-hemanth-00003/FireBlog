@@ -1,0 +1,16 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read access to posts and team members
+    match /posts/{postId} {
+      allow read: if true;
+      allow write: if false; // Lock down writes for now
+    }
+    
+    match /team/{memberId} {
+      allow read: if true;
+      allow write: if false; // Lock down writes for now
+    }
+  }
+}
