@@ -1,11 +1,14 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import { notFound, useRouter } from 'next/navigation';
-import { posts } from '@/lib/data';
 import { PostForm } from '@/components/post-form';
 import type { Post } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { Loader2 } from 'lucide-react';
 
 interface EditPostPageProps {
   params: { slug: string };
@@ -14,24 +17,61 @@ interface EditPostPageProps {
 export default function EditPostPage({ params }: EditPostPageProps) {
   const router = useRouter();
   const { toast } = useToast();
-  const post = posts.find((p) => p.slug === params.slug);
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!post) {
-    notFound();
-  }
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const postDoc = await getDoc(doc(db, 'posts', params.slug));
+        if (postDoc.exists()) {
+          setPost({ slug: postDoc.id, ...postDoc.data() } as Post);
+        } else {
+          notFound();
+        }
+      } catch (error) {
+        console.error("Error fetching post:", error);
+        notFound();
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPost();
+  }, [params.slug]);
 
   const handleSubmit = async (data: Omit<Post, 'slug' | 'date'>) => {
-    // In a real app, you would send this to an API endpoint
-    console.log('Updating post:', data);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: 'Post Updated!',
-      description: 'Your changes have been saved successfully.',
-    });
+    try {
+      const postRef = doc(db, 'posts', params.slug);
+      const updatedData = { ...data, date: new Date().toISOString() };
+      await updateDoc(postRef, updatedData);
+      
+      toast({
+        title: 'Post Updated!',
+        description: 'Your changes have been saved successfully.',
+      });
 
-    router.push('/admin/posts');
+      router.push('/admin/posts');
+    } catch (error) {
+      console.error("Error updating document: ", error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update post. Please try again.',
+        variant: 'destructive',
+      });
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!post) {
+    return notFound();
+  }
 
   return (
      <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">

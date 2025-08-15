@@ -1,19 +1,34 @@
+
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { posts } from '@/lib/data';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { db } from '@/lib/firebase';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { Post } from '@/lib/data';
 
 type Props = {
   params: { slug: string };
 };
 
+// Helper function to fetch a single post
+async function getPost(slug: string): Promise<Post | null> {
+  const docRef = doc(db, "posts", slug);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return { slug: docSnap.id, ...docSnap.data() } as Post;
+  } else {
+    return null;
+  }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = posts.find((p) => p.slug === params.slug);
+  const post = await getPost(params.slug);
 
   if (!post) {
     return {
@@ -27,8 +42,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function ArticlePage({ params }: Props) {
-  const post = posts.find((p) => p.slug === params.slug);
+export default async function ArticlePage({ params }: Props) {
+  const post = await getPost(params.slug);
 
   if (!post) {
     notFound();
@@ -53,7 +68,7 @@ export default function ArticlePage({ params }: Props) {
                   <span>{post.author.name}</span>
                 </div>
                 <span>&middot;</span>
-                <time dateTime={post.date}>{post.date}</time>
+                <time dateTime={post.date}>{new Date(post.date).toLocaleDateString()}</time>
               </div>
             </header>
             
@@ -98,7 +113,13 @@ export default function ArticlePage({ params }: Props) {
 }
 
 export async function generateStaticParams() {
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+  try {
+    const postsCol = collection(db, 'posts');
+    const postSnapshot = await getDocs(postsCol);
+    const posts = postSnapshot.docs.map(doc => ({ slug: doc.id }));
+    return posts;
+  } catch (error) {
+    console.error("Failed to generate static params:", error);
+    return [];
+  }
 }

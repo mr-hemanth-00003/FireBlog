@@ -1,3 +1,4 @@
+
 import type { Post } from '@/lib/data';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -41,7 +42,7 @@ export function ArticleCard({ post }: ArticleCardProps) {
           </Avatar>
           <div>
             <p className="text-sm font-medium">{post.author.name}</p>
-            <p className="text-xs text-muted-foreground">{post.date}</p>
+            <p className="text-xs text-muted-foreground">{new Date(post.date).toLocaleDateString()}</p>
           </div>
         </div>
         <Button asChild variant="ghost" size="sm" className="text-primary hover:text-primary">

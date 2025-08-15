@@ -1,29 +1,78 @@
+
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { ArticleCard } from '@/components/article-card';
-import { posts, Post } from '@/lib/data';
+import { Post } from '@/lib/data';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
+import { db } from '@/lib/firebase';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 
 export default function Home() {
-  const featuredPost = posts[0];
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   
+  useEffect(() => {
+    const postsCollection = collection(db, 'posts');
+    const q = query(postsCollection, orderBy('date', 'desc'));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const postsData = snapshot.docs.map(doc => ({ slug: doc.id, ...doc.data() } as Post));
+      setPosts(postsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching posts: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
-
-  const otherPosts = posts.slice(1);
-  const filteredPosts = otherPosts.filter(post =>
+  
+  const filteredPosts = posts.filter(post =>
     post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     post.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
+  const featuredPost = filteredPosts[0];
+  const otherPosts = filteredPosts.slice(1);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-background">
+        <Header />
+        <main className="flex-grow flex items-center justify-center">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </div>
+    )
+  }
+
+  if (!featuredPost) {
+     return (
+       <div className="flex flex-col min-h-screen bg-background">
+        <Header searchQuery={searchQuery} onSearchChange={handleSearchChange} />
+        <main className="flex-grow">
+          <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 text-center">
+              <h2 className="text-2xl font-bold mb-4">No Posts Found</h2>
+              <p className="text-muted-foreground">There are no posts available. Check back later!</p>
+          </div>
+        </main>
+        <Footer />
+       </div>
+     )
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -63,7 +112,7 @@ export default function Home() {
           <section className="animate-fade-in-up animation-delay-400">
             <h2 className="text-2xl md:text-3xl font-bold mb-8 font-headline text-center">Latest Posts</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPosts.map((post) => (
+              {otherPosts.map((post) => (
                 <ArticleCard key={post.slug} post={post} />
               ))}
                {/* Ad Placeholder 2 - In Grid */}

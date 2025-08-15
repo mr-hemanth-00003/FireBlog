@@ -1,17 +1,32 @@
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileText, MessageSquare, PlusCircle, Tag, Users } from 'lucide-react';
-import { posts } from '@/lib/data';
+import { db } from '@/lib/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { Post } from '@/lib/data';
 
-export const metadata: Metadata = {
-  title: 'Dashboard | FireBlog Admin',
-  description: 'Admin dashboard for FireBlog.',
-};
+// Since this is a client component, we can't export metadata directly.
+// We can set the title in the layout or via Head component if needed.
 
 export default function DashboardPage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, 'posts'), (snapshot) => {
+      const postsData = snapshot.docs.map(doc => ({ slug: doc.id, ...doc.data() } as Post));
+      setPosts(postsData);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+  
   const totalPosts = posts.length;
   // Dummy data for example purposes
   const totalComments = 125;
@@ -40,7 +55,7 @@ export default function DashboardPage() {
                 <FileText className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                <div className="text-2xl font-bold">{totalPosts}</div>
+                <div className="text-2xl font-bold">{loading ? '...' : totalPosts}</div>
                 <p className="text-xs text-muted-foreground">articles currently published</p>
                 </CardContent>
             </Card>
@@ -82,13 +97,13 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
                  <div className="space-y-4">
-                    {posts.slice(0, 5).map((post) => (
+                    {loading ? <p>Loading posts...</p> : posts.slice(0, 5).map((post) => (
                         <div key={post.slug} className="flex items-center justify-between">
                             <div>
                                 <Link href={`/article/${post.slug}`} className="font-medium hover:underline" target="_blank">
                                     {post.title}
                                 </Link>
-                                <p className="text-sm text-muted-foreground">{post.author.name} &middot; {post.date}</p>
+                                <p className="text-sm text-muted-foreground">{post.author.name} &middot; {new Date(post.date).toLocaleDateString()}</p>
                             </div>
                             <Button asChild variant="outline" size="sm">
                                 <Link href={`/admin/posts/edit/${post.slug}`}>

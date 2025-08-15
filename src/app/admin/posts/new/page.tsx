@@ -5,22 +5,43 @@ import { useRouter } from 'next/navigation';
 import { PostForm } from '@/components/post-form';
 import type { Post } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
 
 export default function NewPostPage() {
   const router = useRouter();
   const { toast } = useToast();
 
   const handleSubmit = async (data: Omit<Post, 'slug' | 'date'>) => {
-    // In a real app, you would send this to an API endpoint
-    console.log('Creating new post:', data);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: 'Post Created!',
-      description: 'Your new post has been published successfully.',
-    });
+    try {
+      // Create a slug from the title
+      const slug = data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+      
+      const newPostData = {
+        ...data,
+        slug,
+        date: new Date().toISOString(),
+      };
 
-    router.push('/admin/posts');
+      // Add a new document with a generated id.
+      await setDoc(doc(db, 'posts', slug), newPostData);
+      
+      console.log('Creating new post:', newPostData);
+      
+      toast({
+        title: 'Post Created!',
+        description: 'Your new post has been published successfully.',
+      });
+
+      router.push('/admin/posts');
+    } catch (error) {
+        console.error("Error adding document: ", error);
+        toast({
+          title: 'Error',
+          description: 'Failed to create post. Please try again.',
+          variant: 'destructive',
+        });
+    }
   };
 
   return (
