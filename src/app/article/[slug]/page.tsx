@@ -15,6 +15,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { ShareButton } from '@/components/share-button';
 
 type Props = {
   params: { slug: string };
@@ -111,14 +112,22 @@ export default async function ArticlePage({ params }: Props) {
             </Card>
 
             <footer className="mt-12 pt-8 border-t animate-fade-in-up animation-delay-600">
-              <p className="font-semibold mb-3">Tags:</p>
-              <div className="flex flex-wrap gap-2">
-                {post.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="px-3 py-1 cursor-pointer hover:bg-primary/20 transition-all">
-                      {tag}
-                    </Badge>
-                ))}
-              </div>
+                <div className="flex justify-between items-start">
+                    <div>
+                        <p className="font-semibold mb-3">Tags:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {post.tags.map((tag) => (
+                                <Badge key={tag} variant="secondary" className="px-3 py-1 cursor-pointer hover:bg-primary/20 transition-all">
+                                {tag}
+                                </Badge>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <p className="font-semibold mb-3">Share:</p>
+                        <ShareButton post={post} />
+                    </div>
+                </div>
             </footer>
           </div>
         </article>
