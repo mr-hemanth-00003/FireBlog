@@ -28,7 +28,8 @@ function SearchResults() {
   
   useEffect(() => {
     const postsCollection = collection(db, 'posts');
-    const postsQuery = query(postsCollection, where('isArchived', '==', false), orderBy('date', 'desc'));
+    const now = new Date().toISOString();
+    const postsQuery = query(postsCollection, where('isArchived', '==', false), where('publishDate', '<=', now), orderBy('publishDate', 'desc'));
 
     const unsubscribe = onSnapshot(postsQuery, (snapshot) => {
       const postsData = snapshot.docs.map(doc => ({ slug: doc.id, ...doc.data() } as Post));

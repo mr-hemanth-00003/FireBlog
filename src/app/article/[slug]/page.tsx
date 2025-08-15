@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
 import { Post } from '@/lib/data';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -28,8 +28,9 @@ async function getPost(slug: string): Promise<Post | null> {
 
   if (docSnap.exists()) {
     const postData = { slug: docSnap.id, ...docSnap.data() } as Post;
+    const isPublished = new Date(postData.publishDate) <= new Date();
     // Don't show archived posts on public site
-    if (postData.isArchived) return null;
+    if (postData.isArchived || !isPublished) return null;
     return postData;
   } else {
     return null;
@@ -85,7 +86,7 @@ export default async function ArticlePage({ params }: Props) {
                   <span>{post.author.name}</span>
                 </div>
                 <span>&middot;</span>
-                <time dateTime={post.date}>{new Date(post.date).toLocaleDateString()}</time>
+                <time dateTime={post.publishDate}>{new Date(post.publishDate).toLocaleDateString()}</time>
               </div>
             </header>
             
@@ -140,7 +141,8 @@ export default async function ArticlePage({ params }: Props) {
 export async function generateStaticParams() {
   try {
     const postsCol = collection(db, 'posts');
-    const q = query(postsCol, where('isArchived', '==', false));
+    const now = new Date().toISOString();
+    const q = query(postsCol, where('isArchived', '==', false), where('publishDate', '<=', now));
     const postSnapshot = await getDocs(q);
     const posts = postSnapshot.docs.map(doc => ({ slug: doc.id }));
     return posts;

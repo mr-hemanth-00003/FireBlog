@@ -64,7 +64,7 @@ export function ArticleCard({ post, hideContent = false }: ArticleCardProps) {
           </Avatar>
           <div>
             <p className="text-sm font-medium">{post.author.name}</p>
-            <p className="text-xs text-muted-foreground">{new Date(post.date).toLocaleDateString()}</p>
+            <p className="text-xs text-muted-foreground">{new Date(post.publishDate).toLocaleDateString()}</p>
           </div>
         </div>
         <Button asChild variant="ghost" size="sm" className="text-primary hover:text-primary">

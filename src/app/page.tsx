@@ -23,7 +23,8 @@ export default function Home() {
   
   useEffect(() => {
     const postsCollection = collection(db, 'posts');
-    const q = query(postsCollection, where('isArchived', '==', false), orderBy('date', 'desc'));
+    const now = new Date().toISOString();
+    const q = query(postsCollection, where('isArchived', '==', false), where('publishDate', '<=', now), orderBy('publishDate', 'desc'));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const postsData = snapshot.docs.map(doc => ({ slug: doc.id, ...doc.data() } as Post));

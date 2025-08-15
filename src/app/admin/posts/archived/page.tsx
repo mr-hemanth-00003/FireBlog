@@ -128,7 +128,7 @@ export default function ArchivedPostsPage() {
                     <TableRow key={post.slug}>
                     <TableCell className="font-medium">{post.title}</TableCell>
                     <TableCell>{post.author.name}</TableCell>
-                    <TableCell className="hidden md:table-cell">{new Date(post.date).toLocaleDateString()}</TableCell>
+                    <TableCell className="hidden md:table-cell">{new Date(post.publishDate).toLocaleDateString()}</TableCell>
                     <TableCell>
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild>

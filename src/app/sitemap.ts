@@ -14,13 +14,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const postsCollection = collection(db, 'posts');
-  const q = query(postsCollection, where('isArchived', '==', false), orderBy('date', 'desc'));
+  const now = new Date().toISOString();
+  const q = query(postsCollection, where('isArchived', '==', false), where('publishDate', '<=', now), orderBy('publishDate', 'desc'));
   const snapshot = await getDocs(q);
   const posts = snapshot.docs.map(doc => doc.data() as Post);
 
   const postRoutes = posts.map(post => ({
     url: `${SITE_URL}/article/${post.slug}`,
-    lastModified: new Date(post.date).toISOString(),
+    lastModified: new Date(post.publishDate).toISOString(),
   }));
 
   return [...staticRoutes, ...postRoutes];

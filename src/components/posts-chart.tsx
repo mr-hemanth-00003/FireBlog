@@ -22,8 +22,8 @@ interface PostsChartProps {
 
 export function PostsChart({ posts }: PostsChartProps) {
   const data = posts.reduce((acc, post) => {
-    const month = new Date(post.date).toLocaleString('default', { month: 'short' });
-    const year = new Date(post.date).getFullYear();
+    const month = new Date(post.publishDate).toLocaleString('default', { month: 'short' });
+    const year = new Date(post.publishDate).getFullYear();
     const key = `${month} ${year}`;
     
     const existing = acc.find(item => item.month === key);

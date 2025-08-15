@@ -10,7 +10,7 @@ export interface Post {
     name: string;
     avatarUrl: string;
   };
-  date: string; // Should be ISO string
+  publishDate: string; // Should be ISO string
   tags: string[];
   isArchived: boolean;
 }

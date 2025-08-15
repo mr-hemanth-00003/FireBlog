@@ -12,7 +12,7 @@ export default function NewPostPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleSubmit = async (data: Omit<Post, 'slug' | 'date'>) => {
+  const handleSubmit = async (data: Omit<Post, 'slug'>) => {
     try {
       // Create a slug from the title
       const slug = data.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
@@ -20,7 +20,6 @@ export default function NewPostPage() {
       const newPostData = {
         ...data,
         slug,
-        date: new Date().toISOString(),
         isArchived: data.isArchived || false,
       };
 

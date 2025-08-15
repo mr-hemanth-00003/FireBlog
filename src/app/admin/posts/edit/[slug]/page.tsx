@@ -39,10 +39,10 @@ function EditPostForm({ slug }: { slug: string }) {
     fetchPost();
   }, [slug]);
 
-  const handleSubmit = async (data: Omit<Post, 'slug' | 'date'>) => {
+  const handleSubmit = async (data: Omit<Post, 'slug'>) => {
     try {
       const postRef = doc(db, 'posts', slug);
-      const updatedData = { ...data, date: new Date().toISOString() };
+      const updatedData = { ...data };
       await updateDoc(postRef, updatedData);
       
       toast({

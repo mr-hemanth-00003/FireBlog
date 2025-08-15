@@ -13,7 +13,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { MoreHorizontal, Archive, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Archive, Trash2, Clock } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { db } from '@/lib/firebase';
-import { collection, onSnapshot, doc, deleteDoc, updateDoc, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, doc, deleteDoc, updateDoc, query, where, orderBy } from 'firebase/firestore';
 import type { Post } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -35,7 +35,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
+import { Badge } from '@/components/ui/badge';
 
 export default function PostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -46,7 +47,7 @@ export default function PostsPage() {
 
   useEffect(() => {
     const postsCollection = collection(db, 'posts');
-    const q = query(postsCollection, where('isArchived', '==', false));
+    const q = query(postsCollection, where('isArchived', '==', false), orderBy('publishDate', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const postsData = snapshot.docs.map(doc => ({ slug: doc.id, ...doc.data() } as Post));
       setPosts(postsData);
@@ -106,7 +107,7 @@ export default function PostsPage() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Published Posts</CardTitle>
-              <CardDescription>Manage your published articles.</CardDescription>
+              <CardDescription>Manage your published and scheduled articles.</CardDescription>
             </div>
             <Button asChild>
               <Link href="/admin/posts/new">Create Post</Link>
@@ -122,7 +123,7 @@ export default function PostsPage() {
                 </TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Author</TableHead>
-                <TableHead className="hidden md:table-cell">Date</TableHead>
+                <TableHead className="hidden md:table-cell">Publish Date</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -134,7 +135,9 @@ export default function PostsPage() {
                   <TableCell colSpan={5} className="text-center">Loading posts...</TableCell>
                 </TableRow>
               ) : posts.length > 0 ? (
-                posts.map((post) => (
+                posts.map((post) => {
+                  const isScheduled = new Date(post.publishDate) > new Date();
+                  return (
                     <TableRow key={post.slug}>
                     <TableCell className="hidden sm:table-cell">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -147,9 +150,17 @@ export default function PostsPage() {
                         data-ai-hint={post.imageHint}
                         />
                     </TableCell>
-                    <TableCell className="font-medium">{post.title}</TableCell>
+                    <TableCell className="font-medium">
+                        {post.title}
+                        {isScheduled && (
+                            <Badge variant="outline" className="ml-2">
+                                <Clock className="mr-1 h-3 w-3" />
+                                Scheduled
+                            </Badge>
+                        )}
+                    </TableCell>
                     <TableCell>{post.author.name}</TableCell>
-                    <TableCell className="hidden md:table-cell">{new Date(post.date).toLocaleDateString()}</TableCell>
+                    <TableCell className="hidden md:table-cell">{new Date(post.publishDate).toLocaleDateString()}</TableCell>
                     <TableCell>
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -176,7 +187,8 @@ export default function PostsPage() {
                         </DropdownMenu>
                     </TableCell>
                     </TableRow>
-              ))
+                  )
+                })
               ) : (
                 <TableRow>
                     <TableCell colSpan={5} className="text-center">No published posts found.</TableCell>

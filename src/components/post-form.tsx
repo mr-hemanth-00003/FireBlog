@@ -9,8 +9,12 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import type { Post } from '@/lib/data';
-import { Loader2 } from 'lucide-react';
+import { CalendarIcon, Loader2 } from 'lucide-react';
 import { Switch } from './ui/switch';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { Calendar } from './ui/calendar';
 
 const formSchema = z.object({
   title: z.string().min(5, { message: 'Title must be at least 5 characters long.' }),
@@ -24,12 +28,13 @@ const formSchema = z.object({
   }),
   tags: z.string().min(1, { message: 'Please enter at least one tag.' }),
   isArchived: z.boolean().default(false),
+  publishDate: z.date(),
 });
 
-type FormValues = Omit<Post, 'slug' | 'date' | 'tags'> & { tags: string };
+type FormValues = Omit<Post, 'slug' | 'publishDate' | 'tags'> & { tags: string; publishDate: Date };
 
 interface PostFormProps {
-  onSubmit: (data: Omit<Post, 'slug' | 'date'>) => Promise<void>;
+  onSubmit: (data: Omit<Post, 'slug'>) => Promise<void>;
   defaultValues?: Post;
 }
 
@@ -48,6 +53,7 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
       },
       tags: defaultValues?.tags?.join(', ') || '',
       isArchived: defaultValues?.isArchived || false,
+      publishDate: defaultValues?.publishDate ? new Date(defaultValues.publishDate) : new Date(),
     },
   });
 
@@ -56,6 +62,7 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     const postData = {
       ...values,
+      publishDate: values.publishDate.toISOString(),
       tags: values.tags.split(',').map(tag => tag.trim()),
     };
     onSubmit(postData);
@@ -100,6 +107,50 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
                 </FormControl>
                 </FormItem>
             )}
+        />
+         <FormField
+          control={form.control}
+          name="publishDate"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Publish Date</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[240px] pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) =>
+                      date < new Date(new Date().setHours(0, 0, 0, 0))
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormDescription>
+                Set a date in the future to schedule the post.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
         />
         <FormField
           control={form.control}
