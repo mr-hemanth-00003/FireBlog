@@ -15,6 +15,7 @@ interface HeaderProps {
 
 export function Header({ searchQuery, onSearchChange }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const pathname = usePathname();
   const isHomePage = pathname === '/';
 
@@ -22,11 +23,21 @@ export function Header({ searchQuery, onSearchChange }: HeaderProps) {
     { href: '/', label: 'Home' },
     { href: '/admin/tag-suggester', label: 'AI Tagger' },
   ];
+  
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    if (isSearchOpen) setIsSearchOpen(false);
+  }
+
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
+    if (isMenuOpen) setIsMenuOpen(false);
+  }
 
   return (
     <header className="bg-card/80 backdrop-blur-lg sticky top-0 z-40 w-full border-b">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-        <Link href="/" className="flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
+        <Link href="/" className="flex items-center gap-2" onClick={() => { setIsMenuOpen(false); setIsSearchOpen(false);}}>
           <Feather className="h-6 w-6 text-primary transition-transform hover:rotate-12" />
           <span className="font-bold text-lg font-headline">FireBlog</span>
         </Link>
@@ -54,12 +65,18 @@ export function Header({ searchQuery, onSearchChange }: HeaderProps) {
           ))}
         </nav>
 
-        <div className="md:hidden">
-          <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
+        <div className="md:hidden flex items-center gap-2">
+           {isHomePage && (
+             <Button variant="ghost" size="icon" onClick={toggleSearch} aria-label="Toggle search">
+                <Search className="h-6 w-6" />
+             </Button>
+           )}
+          <Button variant="ghost" size="icon" onClick={toggleMenu} aria-label="Toggle menu">
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
         </div>
       </div>
+      
       {isMenuOpen && (
         <div className="md:hidden border-t bg-card animate-accordion-down">
           <nav className="flex flex-col gap-1 p-4">
@@ -68,23 +85,28 @@ export function Header({ searchQuery, onSearchChange }: HeaderProps) {
                 {item.label}
               </Link>
             ))}
-            {isHomePage && onSearchChange && (
-              <div className="flex items-center gap-2 pt-4">
+          </nav>
+        </div>
+      )}
+      
+      {isSearchOpen && isHomePage && onSearchChange && (
+          <div className="md:hidden border-t bg-card animate-accordion-down p-4">
+            <div className="flex items-center gap-2">
                 <Input 
                   type="search"
-                  placeholder="Search..."
+                  placeholder="Search for articles..."
                   className="flex-grow"
                   value={searchQuery}
                   onChange={onSearchChange}
+                  autoFocus
                 />
                 <Button variant="outline" size="icon" aria-label="Search">
                   <Search className="h-5 w-5"/>
                 </Button>
-              </div>
-            )}
-          </nav>
-        </div>
-      )}
+            </div>
+          </div>
+        )}
+
     </header>
   );
 }
