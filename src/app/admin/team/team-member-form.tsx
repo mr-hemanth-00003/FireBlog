@@ -17,7 +17,7 @@ const formSchema = z.object({
   bio: z.string().min(10, { message: 'Bio must be at least 10 characters long.' }),
   avatarUrl: z.string().url({ message: 'Please enter a valid avatar URL.' }),
   social: z.object({
-      twitter: z.string().url({ message: "Please enter a valid Twitter URL." }),
+      twitter: z.string().url({ message: "Please enter a valid Twitter URL." }).or(z.literal('')).optional(),
       github: z.string().url({ message: "Please enter a valid GitHub URL." }),
       linkedin: z.string().url({ message: "Please enter a valid LinkedIn URL." }),
   }),
@@ -108,7 +108,7 @@ export function TeamMemberForm({ onSubmit, defaultValues }: TeamMemberFormProps)
           name="social.twitter"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Twitter URL</FormLabel>
+              <FormLabel>Twitter URL (Optional)</FormLabel>
               <FormControl>
                 <Input placeholder="https://twitter.com/username" {...field} />
               </FormControl>

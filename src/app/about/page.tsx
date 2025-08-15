@@ -22,7 +22,7 @@ interface TeamMember {
     bio: string;
     avatarUrl: string;
     social: {
-      twitter: string;
+      twitter?: string;
       github: string;
       linkedin: string;
     }
@@ -86,9 +86,11 @@ export default async function AboutPage() {
                     <p className="text-primary font-semibold mb-3">{member.role}</p>
                     <p className="text-muted-foreground text-sm mb-4">{member.bio}</p>
                     <div className="flex justify-center gap-4">
-                        <Button asChild variant="ghost" size="icon">
-                        <Link href={member.social.twitter} target="_blank"><Twitter className="h-5 w-5" /></Link>
-                        </Button>
+                        {member.social.twitter && (
+                            <Button asChild variant="ghost" size="icon">
+                                <Link href={member.social.twitter} target="_blank"><Twitter className="h-5 w-5" /></Link>
+                            </Button>
+                        )}
                         <Button asChild variant="ghost" size="icon">
                         <Link href={member.social.github} target="_blank"><Github className="h-5 w-5" /></Link>
                         </Button>
