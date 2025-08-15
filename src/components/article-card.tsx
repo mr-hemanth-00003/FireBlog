@@ -39,9 +39,11 @@ export function ArticleCard({ post, hideContent = false }: ArticleCardProps) {
           <Image
             src={post.imageUrl}
             alt={post.title}
-            width={600}
-            height={400}
-            className="w-full h-48 object-cover aspect-video transition-transform duration-500 ease-in-out hover:scale-105"
+            width={0}
+            height={0}
+            sizes="100vw"
+            style={{ width: '100%', height: 'auto' }}
+            className="object-cover transition-transform duration-500 ease-in-out hover:scale-105"
             data-ai-hint={post.imageHint}
           />
         </Link>
