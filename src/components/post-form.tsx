@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -34,8 +35,16 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ...defaultValues,
-      tags: defaultValues?.tags.join(', '),
+      title: defaultValues?.title || '',
+      excerpt: defaultValues?.excerpt || '',
+      content: defaultValues?.content || '',
+      imageUrl: defaultValues?.imageUrl || '',
+      imageHint: defaultValues?.imageHint || '',
+      author: {
+        name: defaultValues?.author?.name || '',
+        avatarUrl: defaultValues?.author?.avatarUrl || '',
+      },
+      tags: defaultValues?.tags?.join(', ') || '',
     },
   });
 
