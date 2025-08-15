@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { db } from '@/lib/firebase';
@@ -10,14 +10,14 @@ import { Loader2 } from 'lucide-react';
 import { TeamMemberForm, TeamMemberFormValues } from '../../team-member-form';
 
 interface EditTeamMemberPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 interface TeamMember extends TeamMemberFormValues {
     id: string;
 }
 
-export default function EditTeamMemberPage({ params }: EditTeamMemberPageProps) {
+function EditTeamMemberForm({ id }: { id: string }) {
   const router = useRouter();
   const { toast } = useToast();
   const [member, setMember] = useState<TeamMember | null>(null);
@@ -26,7 +26,7 @@ export default function EditTeamMemberPage({ params }: EditTeamMemberPageProps) 
   useEffect(() => {
     const fetchMember = async () => {
       try {
-        const docRef = await getDoc(doc(db, 'team', params.id));
+        const docRef = await getDoc(doc(db, 'team', id));
         if (docRef.exists()) {
           setMember({ id: docRef.id, ...docRef.data() } as TeamMember);
         } else {
@@ -40,11 +40,11 @@ export default function EditTeamMemberPage({ params }: EditTeamMemberPageProps) 
       }
     };
     fetchMember();
-  }, [params.id]);
+  }, [id]);
 
   const handleSubmit = async (data: TeamMemberFormValues) => {
     try {
-      const memberRef = doc(db, 'team', params.id);
+      const memberRef = doc(db, 'team', id);
       await updateDoc(memberRef, data);
       
       toast({
@@ -63,7 +63,7 @@ export default function EditTeamMemberPage({ params }: EditTeamMemberPageProps) 
     }
   };
 
-  if (loading) {
+   if (loading) {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -83,4 +83,10 @@ export default function EditTeamMemberPage({ params }: EditTeamMemberPageProps) 
         <TeamMemberForm onSubmit={handleSubmit} defaultValues={member} />
     </div>
   );
+}
+
+
+export default function EditTeamMemberPage({ params }: EditTeamMemberPageProps) {
+  const { id } = use(params);
+  return <EditTeamMemberForm id={id} />;
 }

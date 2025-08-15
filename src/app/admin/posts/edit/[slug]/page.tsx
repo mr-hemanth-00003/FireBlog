@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import { PostForm } from '@/components/post-form';
 import type { Post } from '@/lib/data';
@@ -11,10 +11,10 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 
 interface EditPostPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
-export default function EditPostPage({ params }: EditPostPageProps) {
+function EditPostForm({ slug }: { slug: string }) {
   const router = useRouter();
   const { toast } = useToast();
   const [post, setPost] = useState<Post | null>(null);
@@ -23,7 +23,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const postDoc = await getDoc(doc(db, 'posts', params.slug));
+        const postDoc = await getDoc(doc(db, 'posts', slug));
         if (postDoc.exists()) {
           setPost({ slug: postDoc.id, ...postDoc.data() } as Post);
         } else {
@@ -37,11 +37,11 @@ export default function EditPostPage({ params }: EditPostPageProps) {
       }
     };
     fetchPost();
-  }, [params.slug]);
+  }, [slug]);
 
   const handleSubmit = async (data: Omit<Post, 'slug' | 'date'>) => {
     try {
-      const postRef = doc(db, 'posts', params.slug);
+      const postRef = doc(db, 'posts', slug);
       const updatedData = { ...data, date: new Date().toISOString() };
       await updateDoc(postRef, updatedData);
       
@@ -81,4 +81,10 @@ export default function EditPostPage({ params }: EditPostPageProps) {
         <PostForm onSubmit={handleSubmit} defaultValues={post} />
     </div>
   );
+}
+
+
+export default function EditPostPage({ params }: EditPostPageProps) {
+  const { slug } = use(params);
+  return <EditPostForm slug={slug} />;
 }
