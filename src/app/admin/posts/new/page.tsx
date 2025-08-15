@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation';
 import { PostForm } from '@/components/post-form';
 import type { Post } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
-import { db } from '@/lib/firebase';
+import { db, auth } from '@/lib/firebase';
 import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
 
 export default function NewPostPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const currentUser = auth.currentUser;
 
   const handleSubmit = async (data: Omit<Post, 'slug'>) => {
     try {
@@ -21,6 +22,8 @@ export default function NewPostPage() {
         ...data,
         slug,
         isArchived: data.isArchived || false,
+        createdBy: currentUser?.email || 'Unknown',
+        lastModifiedBy: currentUser?.email || 'Unknown',
       };
 
       // Add a new document with a generated id.

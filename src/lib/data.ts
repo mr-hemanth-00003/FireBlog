@@ -13,4 +13,6 @@ export interface Post {
   publishDate: string; // Should be ISO string
   tags: string[];
   isArchived: boolean;
+  createdBy?: string;
+  lastModifiedBy?: string;
 }

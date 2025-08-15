@@ -6,7 +6,7 @@ import { notFound, useRouter } from 'next/navigation';
 import { PostForm } from '@/components/post-form';
 import type { Post } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
-import { db } from '@/lib/firebase';
+import { db, auth } from '@/lib/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 
@@ -19,6 +19,7 @@ function EditPostForm({ slug }: { slug: string }) {
   const { toast } = useToast();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
+  const currentUser = auth.currentUser;
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -42,7 +43,10 @@ function EditPostForm({ slug }: { slug: string }) {
   const handleSubmit = async (data: Omit<Post, 'slug'>) => {
     try {
       const postRef = doc(db, 'posts', slug);
-      const updatedData = { ...data };
+      const updatedData = { 
+        ...data,
+        lastModifiedBy: currentUser?.email || 'Unknown',
+      };
       await updateDoc(postRef, updatedData);
       
       toast({

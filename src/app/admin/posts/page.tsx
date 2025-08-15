@@ -119,12 +119,10 @@ export default function PostsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="hidden w-[100px] sm:table-cell">
-                  Image
-                </TableHead>
                 <TableHead>Title</TableHead>
-                <TableHead>Author</TableHead>
                 <TableHead className="hidden md:table-cell">Publish Date</TableHead>
+                <TableHead className="hidden md:table-cell">Created by</TableHead>
+                <TableHead className="hidden md:table-cell">Last modified by</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -140,17 +138,6 @@ export default function PostsPage() {
                   const isScheduled = new Date(post.publishDate) > new Date();
                   return (
                     <TableRow key={post.slug}>
-                    <TableCell className="hidden sm:table-cell">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                        alt={post.title}
-                        className="aspect-square rounded-md object-cover"
-                        height="64"
-                        src={post.imageUrl}
-                        width="64"
-                        data-ai-hint={post.imageHint}
-                        />
-                    </TableCell>
                     <TableCell className="font-medium">
                         {post.title}
                         {isScheduled && (
@@ -160,8 +147,9 @@ export default function PostsPage() {
                             </Badge>
                         )}
                     </TableCell>
-                    <TableCell>{post.author.name}</TableCell>
                     <TableCell className="hidden md:table-cell">{format(new Date(post.publishDate), "PPp")}</TableCell>
+                    <TableCell className="hidden md:table-cell">{post.createdBy || 'N/A'}</TableCell>
+                    <TableCell className="hidden md:table-cell">{post.lastModifiedBy || 'N/A'}</TableCell>
                     <TableCell>
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild>
