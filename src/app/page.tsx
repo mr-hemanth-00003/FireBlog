@@ -84,10 +84,14 @@ export default function Home() {
             {/* <!-- Ad Placeholder 1 --> */}
           </Card>
 
-          {!featuredPost && (
+          {filteredPosts.length === 0 && (
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-4">No Posts Found</h2>
-              <p className="text-muted-foreground">Try adjusting your search or check back later!</p>
+                {searchQuery ? (
+                    <p className="text-muted-foreground">Your search for "{searchQuery}" did not return any results.</p>
+                ) : (
+                    <p className="text-muted-foreground">There are no posts available. Check back later!</p>
+                )}
             </div>
           )}
 
@@ -96,7 +100,7 @@ export default function Home() {
             <section className="mb-12 md:mb-16 animate-fade-in-up animation-delay-200">
               <Card className="overflow-hidden">
                   <div className="grid md:grid-cols-2 gap-8 items-center">
-                    <div className="p-8 md:p-12">
+                    <div className="p-8 md:p-12 md:order-2">
                       <p className="text-primary font-semibold mb-2 font-headline">Featured Article</p>
                       <h1 className="text-3xl md:text-4xl font-bold mb-4 font-headline leading-tight">
                         <Link href={`/article/${featuredPost.slug}`} className="hover:text-primary transition-colors">
@@ -108,7 +112,7 @@ export default function Home() {
                         <Link href={`/article/${featuredPost.slug}`}>Read Full Story</Link>
                       </Button>
                     </div>
-                    <div className="md:order-2">
+                    <div className="md:order-1">
                        <ArticleCard post={featuredPost} hideContent={true} />
                     </div>
                   </div>
