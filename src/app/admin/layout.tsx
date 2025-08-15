@@ -65,16 +65,6 @@ const navItems = [
         icon: Users,
     },
     {
-        label: 'AI Tools',
-        icon: Bot,
-        subItems: [
-            {
-                label: 'Tag Suggester',
-                href: '/admin/tools/tag-suggester',
-            },
-        ],
-    },
-    {
         label: 'Settings',
         href: '/admin/settings',
         icon: Settings,
@@ -166,7 +156,7 @@ function AdminSidebar() {
             <SidebarContent className="p-2">
                 <SidebarMenu>
                     {navItems.map((item) => (
-                        item.subItems ? (
+                        'subItems' in item && item.subItems ? (
                             <SidebarMenuItem key={item.label}>
                                 <SidebarMenuButton
                                     isActive={item.subItems.some(si => pathname.startsWith(si.href))}
