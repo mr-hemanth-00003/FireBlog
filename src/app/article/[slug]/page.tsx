@@ -73,7 +73,7 @@ export default async function ArticlePage({ params }: Props) {
               <h1 className="text-3xl md:text-5xl font-bold font-headline leading-tight mb-4">
                 {post.title}
               </h1>
-              <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground mb-6">
                 <div className="flex items-center gap-2">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />
@@ -84,6 +84,7 @@ export default async function ArticlePage({ params }: Props) {
                 <span>&middot;</span>
                 <time dateTime={post.date}>{new Date(post.date).toLocaleDateString()}</time>
               </div>
+              <ShareButton post={post} />
             </header>
             
             <Card className="overflow-hidden mb-8 md:mb-12 shadow-lg animate-fade-in-up animation-delay-200">
@@ -122,10 +123,6 @@ export default async function ArticlePage({ params }: Props) {
                                 </Badge>
                             ))}
                         </div>
-                    </div>
-                    <div>
-                        <p className="font-semibold mb-3">Share:</p>
-                        <ShareButton post={post} />
                     </div>
                 </div>
             </footer>
