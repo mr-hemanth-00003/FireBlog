@@ -146,9 +146,9 @@ function AdminSidebar() {
                                 <SidebarMenuSub>
                                     {item.subItems.map(subItem => (
                                         <SidebarMenuSubItem key={subItem.label}>
-                                            <Link href={subItem.href}>
-                                                <SidebarMenuSubButton isActive={pathname.startsWith(subItem.href)}>
-                                                    {subItem.label}
+                                            <Link href={subItem.href} passHref legacyBehavior>
+                                                <SidebarMenuSubButton asChild isActive={pathname.startsWith(subItem.href)}>
+                                                    <a>{subItem.label}</a>
                                                 </SidebarMenuSubButton>
                                             </Link>
                                         </SidebarMenuSubItem>
@@ -193,4 +193,3 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     </html>
   );
 }
-
