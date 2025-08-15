@@ -38,11 +38,34 @@ export function Header({ searchQuery, onSearchChange }: HeaderProps) {
     if (isMenuOpen) setIsMenuOpen(false);
   }
 
+  if (isAdminPage) {
+    return (
+       <header className="bg-card/80 backdrop-blur-lg sticky top-0 z-40 w-full border-b">
+         <div className="flex h-16 items-center justify-between px-4 md:px-6">
+            <div className="flex items-center gap-2">
+                <SidebarTrigger className="md:hidden" />
+                <div className="hidden md:block">
+                  <Link href="/" className="flex items-center gap-2">
+                    <Feather className="h-6 w-6 text-primary transition-transform hover:rotate-12" />
+                    <span className="font-bold text-lg font-headline">FireBlog</span>
+                  </Link>
+                </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-muted-foreground">Admin Panel</span>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/" target="_blank">View Site</Link>
+              </Button>
+            </div>
+        </div>
+       </header>
+    );
+  }
+
   return (
     <header className="bg-card/80 backdrop-blur-lg sticky top-0 z-40 w-full border-b">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-2">
-          {isAdminPage && <SidebarTrigger className="md:hidden" />}
           <Link href="/" className="flex items-center gap-2" onClick={() => { setIsMenuOpen(false); setIsSearchOpen(false);}}>
             <Feather className="h-6 w-6 text-primary transition-transform hover:rotate-12" />
             <span className="font-bold text-lg font-headline">FireBlog</span>
