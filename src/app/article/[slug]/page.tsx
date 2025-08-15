@@ -10,6 +10,8 @@ import { Card } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { Post } from '@/lib/data';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 type Props = {
   params: { slug: string };
@@ -85,9 +87,12 @@ export default async function ArticlePage({ params }: Props) {
             </Card>
 
             <div
-              className="prose-styles animate-fade-in-up animation-delay-400"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+              className="prose dark:prose-invert lg:prose-xl max-w-none animate-fade-in-up animation-delay-400"
+            >
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {post.content}
+              </ReactMarkdown>
+            </div>
 
             {/* <!-- Ad Placeholder 3 --> */}
             <Card className="my-8 md:my-12 p-4 text-center animate-fade-in">

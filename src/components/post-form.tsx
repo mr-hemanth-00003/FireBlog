@@ -41,8 +41,8 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
       imageUrl: defaultValues?.imageUrl || '',
       imageHint: defaultValues?.imageHint || '',
       author: {
-        name: defaultValues?.author?.name || '',
-        avatarUrl: defaultValues?.author?.avatarUrl || '',
+        name: defaultValues?.author?.name || 'Admin',
+        avatarUrl: defaultValues?.author?.avatarUrl || 'https://placehold.co/40x40.png',
       },
       tags: defaultValues?.tags?.join(', ') || '',
     },
@@ -93,9 +93,9 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
           name="content"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Content (HTML)</FormLabel>
+              <FormLabel>Content (Markdown)</FormLabel>
               <FormControl>
-                <Textarea placeholder="Write your article content using HTML tags." {...field} className="min-h-[300px]" />
+                <Textarea placeholder="Write your article content using Markdown." {...field} className="min-h-[300px]" />
               </FormControl>
               <FormMessage />
             </FormItem>
