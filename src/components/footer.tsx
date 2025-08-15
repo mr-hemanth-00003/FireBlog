@@ -11,9 +11,11 @@ export function Footer() {
             <Feather className="h-5 w-5 text-primary" />
             <span className="font-semibold font-headline">FireBlog</span>
           </div>
-          <p className="text-sm text-muted-foreground">
-            &copy; {currentYear} FireBlog. All Rights Reserved.
-          </p>
+           <nav className="flex gap-6 items-center">
+             <Link href="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Home</Link>
+             <Link href="/about" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">About</Link>
+             <Link href="/contact" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Contact</Link>
+          </nav>
           <div className="flex items-center gap-4">
             <Link href="#" aria-label="Twitter">
               <Twitter className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
@@ -23,6 +25,9 @@ export function Footer() {
             </Link>
           </div>
         </div>
+        <p className="text-center text-sm text-muted-foreground mt-6">
+            &copy; {currentYear} FireBlog. All Rights Reserved.
+        </p>
       </div>
     </footer>
   );

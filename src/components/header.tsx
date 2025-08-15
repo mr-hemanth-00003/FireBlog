@@ -23,6 +23,8 @@ export function Header({ searchQuery, onSearchChange }: HeaderProps) {
 
   const navItems = [
     { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/contact', label: 'Contact' },
     { href: '/admin', label: 'Admin' },
   ];
   
