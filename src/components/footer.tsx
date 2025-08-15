@@ -28,7 +28,6 @@ export function Footer() {
              <Link href="/" className="text-sm text-muted-foreground transition-colors hover:text-primary hover:underline underline-offset-4">Home</Link>
              <Link href="/about" className="text-sm text-muted-foreground transition-colors hover:text-primary hover:underline underline-offset-4">About</Link>
              <Link href="/contact" className="text-sm text-muted-foreground transition-colors hover:text-primary hover:underline underline-offset-4">Contact</Link>
-             <Link href="/admin" className="text-sm text-muted-foreground transition-colors hover:text-primary hover:underline underline-offset-4">Admin</Link>
             </nav>
           </div>
           
