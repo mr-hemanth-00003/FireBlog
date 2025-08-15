@@ -1,6 +1,6 @@
+
 'use client';
 
-import type { Metadata } from 'next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, Send } from 'lucide-react';
+import { Mail, Send, Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -103,8 +103,17 @@ export default function ContactPage() {
                     )}
                   />
                   <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-                     {isSubmitting ? 'Sending...' : 'Send Message'}
-                     {!isSubmitting && <Send className="ml-2 h-5 w-5" />}
+                     {isSubmitting ? (
+                        <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Sending...
+                        </>
+                     ) : (
+                        <>
+                           Send Message
+                           <Send className="ml-2 h-5 w-5" />
+                        </>
+                     )}
                   </Button>
                 </form>
               </Form>
