@@ -37,9 +37,15 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
+  const triggerSearch = () => {
+    if (searchQuery.trim() !== '') {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  }
+
   const handleSearchSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && searchQuery.trim() !== '') {
-        router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+    if (event.key === 'Enter') {
+        triggerSearch();
     }
   };
   
@@ -65,16 +71,22 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
 
           <section className="mb-8">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search for articles and press Enter..."
-                className="w-full pl-10"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleSearchSubmit}
-              />
+            <div className="flex w-full items-center space-x-2">
+              <div className="relative flex-grow">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search for articles..."
+                  className="w-full pl-10"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleSearchSubmit}
+                />
+              </div>
+               <Button type="submit" onClick={triggerSearch} aria-label="Search">
+                  <Search className="h-5 w-5" />
+                  <span className="hidden md:inline-block ml-2">Search</span>
+              </Button>
             </div>
           </section>
 
