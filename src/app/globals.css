@@ -94,4 +94,7 @@ body {
         @apply font-headline;
     }
   }
+  ::selection {
+    @apply bg-primary/80 text-primary-foreground;
+  }
 }
