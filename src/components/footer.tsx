@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Feather, Github, Twitter, Linkedin, Rss } from 'lucide-react';
 import { Button } from './ui/button';
@@ -34,8 +35,8 @@ export function Footer() {
           <div className="lg:col-span-2">
             <h3 className="font-semibold font-headline text-foreground mb-4">Legal</h3>
             <nav className="flex flex-col gap-3">
-             <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-primary hover:underline underline-offset-4">Privacy Policy</Link>
-             <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-primary hover:underline underline-offset-4">Terms of Service</Link>
+             <Link href="/privacy-policy" className="text-sm text-muted-foreground transition-colors hover:text-primary hover:underline underline-offset-4">Privacy Policy</Link>
+             <Link href="/terms-of-service" className="text-sm text-muted-foreground transition-colors hover:text-primary hover:underline underline-offset-4">Terms of Service</Link>
             </nav>
           </div>
           
