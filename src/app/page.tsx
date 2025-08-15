@@ -18,6 +18,7 @@ export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [submittedQuery, setSubmittedQuery] = useState('');
   
   useEffect(() => {
     const postsCollection = collection(db, 'posts');
@@ -37,11 +38,22 @@ export default function Home() {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
+    // Live search as user types
+    if (event.target.value === '') {
+        setSubmittedQuery('');
+    }
+  };
+
+  const handleSearchSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+        setSubmittedQuery(searchQuery);
+    }
   };
   
+  const queryToFilter = submittedQuery || searchQuery;
   const filteredPosts = posts.filter(post =>
-    post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    post.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
+    post.title.toLowerCase().includes(queryToFilter.toLowerCase()) ||
+    post.excerpt.toLowerCase().includes(queryToFilter.toLowerCase())
   );
   
   const featuredPost = filteredPosts[0];
@@ -74,6 +86,7 @@ export default function Home() {
                 className="w-full pl-10"
                 value={searchQuery}
                 onChange={handleSearchChange}
+                onKeyDown={handleSearchSubmit}
               />
             </div>
           </section>
@@ -87,8 +100,8 @@ export default function Home() {
           {filteredPosts.length === 0 && (
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-4">No Posts Found</h2>
-                {searchQuery ? (
-                    <p className="text-muted-foreground">Your search for "{searchQuery}" did not return any results.</p>
+                {queryToFilter ? (
+                    <p className="text-muted-foreground">Your search for "{queryToFilter}" did not return any results.</p>
                 ) : (
                     <p className="text-muted-foreground">There are no posts available. Check back later!</p>
                 )}
@@ -100,7 +113,7 @@ export default function Home() {
             <section className="mb-12 md:mb-16 animate-fade-in-up animation-delay-200">
               <Card className="overflow-hidden">
                   <div className="grid md:grid-cols-2 gap-8 items-center">
-                    <div className="p-8 md:p-12 md:order-2">
+                    <div className="p-8 md:p-12">
                       <p className="text-primary font-semibold mb-2 font-headline">Featured Article</p>
                       <h1 className="text-3xl md:text-4xl font-bold mb-4 font-headline leading-tight">
                         <Link href={`/article/${featuredPost.slug}`} className="hover:text-primary transition-colors">
@@ -112,7 +125,7 @@ export default function Home() {
                         <Link href={`/article/${featuredPost.slug}`}>Read Full Story</Link>
                       </Button>
                     </div>
-                    <div className="md:order-1">
+                    <div className="">
                        <ArticleCard post={featuredPost} hideContent={true} />
                     </div>
                   </div>
