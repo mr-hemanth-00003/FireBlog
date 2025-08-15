@@ -75,7 +75,7 @@ const navItems = [
     },
 ]
 
-function UserMenu() {
+function UserMenu({ user }: { user: User | null }) {
     const { toast } = useToast();
     const router = useRouter();
 
@@ -102,17 +102,17 @@ function UserMenu() {
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                        <AvatarImage src="https://placehold.co/40x40.png" alt="Admin" />
-                        <AvatarFallback>A</AvatarFallback>
+                        <AvatarImage src={user?.photoURL ?? "https://placehold.co/40x40.png"} alt={user?.displayName ?? "Admin"} />
+                        <AvatarFallback>{user?.email?.charAt(0).toUpperCase() ?? 'A'}</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">Admin</p>
+                    <p className="text-sm font-medium leading-none">{user?.displayName ?? 'Admin'}</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                    basumgarianand109@gmail.com
+                        {user?.email}
                     </p>
                 </div>
                 </DropdownMenuLabel>
@@ -133,7 +133,7 @@ function UserMenu() {
     )
 }
 
-function AdminHeader() {
+function AdminHeader({ user }: { user: User | null }) {
     const { isMobile } = useSidebar();
     return (
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
@@ -141,7 +141,7 @@ function AdminHeader() {
             <div className="w-full flex-1">
                 {/* Optional: Add search bar here later */}
             </div>
-            <UserMenu />
+            <UserMenu user={user} />
         </header>
     )
 }
@@ -286,7 +286,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <div className="flex min-h-screen w-full">
                 <AdminSidebar />
                 <div className="flex flex-col flex-1">
-                    <AdminHeader />
+                    <AdminHeader user={user}/>
                     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40">
                         {children}
                     </main>
