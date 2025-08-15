@@ -29,7 +29,9 @@ export default function DashboardPage() {
   const totalPosts = posts.length;
   // Dummy data for example purposes - will be replaced with real data later
   const totalComments = 0;
-  const totalTags = 0;
+  const allTags = posts.flatMap(post => post.tags);
+  const uniqueTags = new Set(allTags);
+  const totalTags = uniqueTags.size;
   const totalUsers = 0;
 
 
@@ -74,8 +76,8 @@ export default function DashboardPage() {
                 <Tag className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                <div className="text-2xl font-bold">{totalTags}</div>
-                <p className="text-xs text-muted-foreground">(coming soon)</p>
+                <div className="text-2xl font-bold">{loading ? '...' : totalTags}</div>
+                <p className="text-xs text-muted-foreground">unique tags used</p>
                 </CardContent>
             </Card>
              <Card>
