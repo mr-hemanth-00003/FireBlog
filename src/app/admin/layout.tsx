@@ -22,7 +22,7 @@ import {
   SidebarInset,
   useSidebar
 } from '@/components/ui/sidebar';
-import { Feather, LayoutDashboard, FileText, Settings, Bot, Home, LogOut, Loader2 } from 'lucide-react';
+import { Feather, LayoutDashboard, FileText, Settings, Bot, Home, LogOut, Loader2, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -51,6 +51,11 @@ const navItems = [
         label: 'Posts',
         href: '/admin/posts',
         icon: FileText,
+    },
+    {
+        label: 'Messages',
+        href: '/admin/messages',
+        icon: MessageSquare,
     },
     {
         label: 'AI Tools',

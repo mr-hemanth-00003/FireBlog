@@ -13,6 +13,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Send, Loader2 } from 'lucide-react';
+import { db } from '@/lib/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -34,15 +36,25 @@ export default function ContactPage() {
   const { isSubmitting } = form.formState;
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log(values);
-    
-    toast({
-      title: "Message Sent!",
-      description: "Thanks for reaching out. We'll get back to you soon.",
-    });
-    form.reset();
+    try {
+      await addDoc(collection(db, 'contacts'), {
+        ...values,
+        date: new Date().toISOString(),
+      });
+      
+      toast({
+        title: "Message Sent!",
+        description: "Thanks for reaching out. We'll get back to you soon.",
+      });
+      form.reset();
+    } catch(error) {
+       console.error("Error adding document: ", error);
+        toast({
+          title: 'Error',
+          description: 'Failed to send message. Please try again later.',
+          variant: 'destructive',
+        });
+    }
   }
 
   return (
