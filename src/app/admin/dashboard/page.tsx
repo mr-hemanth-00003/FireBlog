@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,10 +27,10 @@ export default function DashboardPage() {
   }, []);
   
   const totalPosts = posts.length;
-  // Dummy data for example purposes
-  const totalComments = 125;
-  const totalTags = 15;
-  const totalUsers = 2;
+  // Dummy data for example purposes - will be replaced with real data later
+  const totalComments = 0;
+  const totalTags = 0;
+  const totalUsers = 0;
 
 
   return (
@@ -66,7 +65,7 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                 <div className="text-2xl font-bold">+{totalComments}</div>
-                <p className="text-xs text-muted-foreground">(dummy data)</p>
+                <p className="text-xs text-muted-foreground">(coming soon)</p>
                 </CardContent>
             </Card>
             <Card>
@@ -76,7 +75,7 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                 <div className="text-2xl font-bold">{totalTags}</div>
-                <p className="text-xs text-muted-foreground">(dummy data)</p>
+                <p className="text-xs text-muted-foreground">(coming soon)</p>
                 </CardContent>
             </Card>
              <Card>
@@ -86,7 +85,7 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                 <div className="text-2xl font-bold">{totalUsers}</div>
-                <p className="text-xs text-muted-foreground">(dummy data)</p>
+                <p className="text-xs text-muted-foreground">(coming soon)</p>
                 </CardContent>
             </Card>
         </div>

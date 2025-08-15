@@ -7,13 +7,40 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Github, Twitter, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { db } from '@/lib/firebase';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 export const metadata: Metadata = {
   title: 'About Us | FireBlog',
   description: 'Learn more about the team and mission behind FireBlog.',
 };
 
-export default function AboutPage() {
+interface TeamMember {
+    id: string;
+    name: string;
+    role: string;
+    bio: string;
+    avatarUrl: string;
+    social: {
+      twitter: string;
+      github: string;
+      linkedin: string;
+    }
+}
+
+async function getTeamMembers(): Promise<TeamMember[]> {
+    const teamCollection = collection(db, 'team');
+    const q = query(teamCollection, orderBy('name'));
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+        return [];
+    }
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as TeamMember));
+}
+
+export default async function AboutPage() {
+    const teamMembers = await getTeamMembers();
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
@@ -47,30 +74,34 @@ export default function AboutPage() {
 
           <section>
             <h2 className="text-3xl font-bold font-headline text-center mb-10">Meet the Team</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {teamMembers.map(member => (
-                <Card key={member.name} className="text-center p-6 transition-all hover:shadow-xl hover:-translate-y-1">
-                  <Avatar className="w-24 h-24 mx-auto mb-4 border-4 border-primary/20">
-                    <AvatarImage src={member.avatarUrl} alt={member.name} />
-                    <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <h3 className="text-xl font-bold font-headline">{member.name}</h3>
-                  <p className="text-primary font-semibold mb-3">{member.role}</p>
-                  <p className="text-muted-foreground text-sm mb-4">{member.bio}</p>
-                  <div className="flex justify-center gap-4">
-                    <Button asChild variant="ghost" size="icon">
-                      <Link href={member.social.twitter} target="_blank"><Twitter className="h-5 w-5" /></Link>
-                    </Button>
-                     <Button asChild variant="ghost" size="icon">
-                      <Link href={member.social.github} target="_blank"><Github className="h-5 w-5" /></Link>
-                    </Button>
-                     <Button asChild variant="ghost" size="icon">
-                      <Link href={member.social.linkedin} target="_blank"><Linkedin className="h-5 w-5" /></Link>
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
+            {teamMembers.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {teamMembers.map(member => (
+                    <Card key={member.name} className="text-center p-6 transition-all hover:shadow-xl hover:-translate-y-1">
+                    <Avatar className="w-24 h-24 mx-auto mb-4 border-4 border-primary/20">
+                        <AvatarImage src={member.avatarUrl} alt={member.name} />
+                        <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <h3 className="text-xl font-bold font-headline">{member.name}</h3>
+                    <p className="text-primary font-semibold mb-3">{member.role}</p>
+                    <p className="text-muted-foreground text-sm mb-4">{member.bio}</p>
+                    <div className="flex justify-center gap-4">
+                        <Button asChild variant="ghost" size="icon">
+                        <Link href={member.social.twitter} target="_blank"><Twitter className="h-5 w-5" /></Link>
+                        </Button>
+                        <Button asChild variant="ghost" size="icon">
+                        <Link href={member.social.github} target="_blank"><Github className="h-5 w-5" /></Link>
+                        </Button>
+                        <Button asChild variant="ghost" size="icon">
+                        <Link href={member.social.linkedin} target="_blank"><Linkedin className="h-5 w-5" /></Link>
+                        </Button>
+                    </div>
+                    </Card>
+                ))}
+                </div>
+            ): (
+                 <p className="text-center text-muted-foreground">Team members will be displayed here soon.</p>
+            )}
           </section>
 
         </div>
@@ -79,40 +110,3 @@ export default function AboutPage() {
     </div>
   );
 }
-
-
-const teamMembers = [
-  {
-    name: 'Jane Doe',
-    role: 'Founder & Lead Writer',
-    bio: 'Jane is a full-stack developer with a passion for Firebase and modern web architecture. She started FireBlog to share her knowledge with the world.',
-    avatarUrl: 'https://placehold.co/128x128.png',
-    social: {
-      twitter: '#',
-      github: '#',
-      linkedin: '#'
-    }
-  },
-  {
-    name: 'John Smith',
-    role: 'Frontend Specialist',
-    bio: 'John lives and breathes CSS. He is the creative force behind the look and feel of our blog and specializes in creating beautiful user interfaces.',
-    avatarUrl: 'https://placehold.co/128x128.png',
-    social: {
-      twitter: '#',
-      github: '#',
-      linkedin: '#'
-    }
-  },
-  {
-    name: 'Alex Johnson',
-    role: 'SEO & Content Strategist',
-    bio: 'Alex ensures our content reaches the right audience. With a background in digital marketing, they are the expert in all things SEO.',
-    avatarUrl: 'https://placehold.co/128x128.png',
-    social: {
-      twitter: '#',
-      github: '#',
-      linkedin: '#'
-    }
-  }
-];
