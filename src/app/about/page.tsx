@@ -23,8 +23,8 @@ interface TeamMember {
     avatarUrl: string;
     social: {
       twitter?: string;
-      github: string;
-      linkedin: string;
+      github?: string;
+      linkedin?: string;
     }
 }
 
@@ -91,12 +91,16 @@ export default async function AboutPage() {
                                 <Link href={member.social.twitter} target="_blank"><Twitter className="h-5 w-5" /></Link>
                             </Button>
                         )}
-                        <Button asChild variant="ghost" size="icon">
-                        <Link href={member.social.github} target="_blank"><Github className="h-5 w-5" /></Link>
-                        </Button>
-                        <Button asChild variant="ghost" size="icon">
-                        <Link href={member.social.linkedin} target="_blank"><Linkedin className="h-5 w-5" /></Link>
-                        </Button>
+                        {member.social.github && (
+                            <Button asChild variant="ghost" size="icon">
+                                <Link href={member.social.github} target="_blank"><Github className="h-5 w-5" /></Link>
+                            </Button>
+                        )}
+                        {member.social.linkedin && (
+                            <Button asChild variant="ghost" size="icon">
+                                <Link href={member.social.linkedin} target="_blank"><Linkedin className="h-5 w-5" /></Link>
+                            </Button>
+                        )}
                     </div>
                     </Card>
                 ))}

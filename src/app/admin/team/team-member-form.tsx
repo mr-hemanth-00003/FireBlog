@@ -18,8 +18,8 @@ const formSchema = z.object({
   avatarUrl: z.string().url({ message: 'Please enter a valid avatar URL.' }),
   social: z.object({
       twitter: z.string().url({ message: "Please enter a valid Twitter URL." }).or(z.literal('')).optional(),
-      github: z.string().url({ message: "Please enter a valid GitHub URL." }),
-      linkedin: z.string().url({ message: "Please enter a valid LinkedIn URL." }),
+      github: z.string().url({ message: "Please enter a valid GitHub URL." }).or(z.literal('')).optional(),
+      linkedin: z.string().url({ message: "Please enter a valid LinkedIn URL." }).or(z.literal('')).optional(),
   }),
 });
 
@@ -121,7 +121,7 @@ export function TeamMemberForm({ onSubmit, defaultValues }: TeamMemberFormProps)
           name="social.github"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>GitHub URL</FormLabel>
+              <FormLabel>GitHub URL (Optional)</FormLabel>
               <FormControl>
                 <Input placeholder="https://github.com/username" {...field} />
               </FormControl>
@@ -134,7 +134,7 @@ export function TeamMemberForm({ onSubmit, defaultValues }: TeamMemberFormProps)
           name="social.linkedin"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>LinkedIn URL</FormLabel>
+              <FormLabel>LinkedIn URL (Optional)</FormLabel>
               <FormControl>
                 <Input placeholder="https://linkedin.com/in/username" {...field} />
               </FormControl>
