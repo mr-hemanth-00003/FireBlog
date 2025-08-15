@@ -35,8 +35,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from '@/hooks/use-toast';
-import { auth } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { collection, onSnapshot, query, where, Timestamp } from 'firebase/firestore';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -229,6 +230,49 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
     return () => unsubscribe();
   }, [router, pathname]);
+
+  // Handle push notifications for new messages
+  React.useEffect(() => {
+    if (!user) return;
+
+    // 1. Request notification permission
+    if (typeof window !== 'undefined' && "Notification" in window) {
+      if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission();
+      }
+    }
+
+    // 2. Listen for new messages
+    const messagesCollection = collection(db, 'contacts');
+    // We only want to get notifications for messages that arrived after we logged in.
+    const q = query(messagesCollection, where('date', '>', new Date().toISOString()));
+    
+    let isInitialLoad = true;
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+       // Ignore the initial batch of documents
+      if (isInitialLoad) {
+        isInitialLoad = false;
+        return;
+      }
+      
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+            const message = change.doc.data();
+            console.log("New message:", message);
+            // 3. Show notification
+            if (Notification.permission === "granted") {
+                new Notification("New Contact Message", {
+                    body: `From: ${message.name}\nMessage: ${message.message.substring(0, 100)}...`,
+                    icon: '/favicon.ico' // Optional: Add an icon
+                });
+            }
+        }
+      });
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   if (loading || (!user && pathname !== '/admin/login')) {
     return (
