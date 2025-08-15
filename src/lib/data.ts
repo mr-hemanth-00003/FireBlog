@@ -10,6 +10,7 @@ export interface Post {
     avatarUrl: string;
   };
   date: string;
+  tags: string[];
 }
 
 export const posts: Post[] = [
@@ -50,6 +51,7 @@ const app = initializeApp(firebaseConfig);</code></pre>
       avatarUrl: 'https://placehold.co/40x40.png',
     },
     date: 'October 26, 2023',
+    tags: ['Firebase', 'Web Dev', 'Google'],
   },
   {
     slug: 'modern-css-styling',
@@ -80,6 +82,7 @@ body {
       avatarUrl: 'https://placehold.co/40x40.png',
     },
     date: 'October 22, 2023',
+    tags: ['CSS', 'Frontend', 'Web Design'],
   },
   {
     slug: 'seo-optimization-basics',
@@ -101,6 +104,7 @@ body {
       avatarUrl: 'https://placehold.co/40x40.png',
     },
     date: 'October 18, 2023',
+    tags: ['SEO', 'Marketing', 'Content Strategy'],
   },
   {
     slug: 'react-hooks-guide',
@@ -122,6 +126,7 @@ body {
       avatarUrl: 'https://placehold.co/40x40.png',
     },
     date: 'October 15, 2023',
+    tags: ['React', 'JavaScript', 'Frontend'],
   },
   {
     slug: 'scalable-nodejs-api',
@@ -151,6 +156,7 @@ body {
       avatarUrl: 'https://placehold.co/40x40.png',
     },
     date: 'October 11, 2023',
+    tags: ['Node.js', 'API', 'Backend'],
   },
   {
     slug: 'demystifying-tailwind-css',
@@ -172,5 +178,6 @@ body {
       avatarUrl: 'https://placehold.co/40x40.png',
     },
     date: 'October 07, 2023',
+    tags: ['TailwindCSS', 'CSS', 'Frontend'],
   }
 ];

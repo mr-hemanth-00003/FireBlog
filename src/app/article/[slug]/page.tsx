@@ -82,9 +82,9 @@ export default function ArticlePage({ params }: Props) {
             <footer className="mt-12 pt-8 border-t">
               <p className="font-semibold mb-3">Tags:</p>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="px-3 py-1">Firebase</Badge>
-                <Badge variant="secondary" className="px-3 py-1">Web Dev</Badge>
-                <Badge variant="secondary" className="px-3 py-1">JavaScript</Badge>
+                {post.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="px-3 py-1">{tag}</Badge>
+                ))}
               </div>
             </footer>
           </div>

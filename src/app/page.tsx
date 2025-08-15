@@ -13,13 +13,13 @@ import { Search } from 'lucide-react';
 
 export default function Home() {
   const featuredPost = posts[0];
-  const otherPosts = posts.slice(1);
   const [searchQuery, setSearchQuery] = useState('');
   
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
+  const otherPosts = posts.slice(1);
   const filteredPosts = otherPosts.filter(post =>
     post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     post.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
@@ -27,7 +27,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <Header />
+      <Header searchQuery={searchQuery} onSearchChange={handleSearchChange} />
       <main className="flex-grow">
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
           {/* Ad Placeholder */}
@@ -59,21 +59,6 @@ export default function Home() {
             </Card>
           </section>
           
-          <section className="mb-12">
-            <div className="flex items-center gap-2 max-w-lg mx-auto">
-              <Input 
-                type="search"
-                placeholder="Search for articles..."
-                className="flex-grow"
-                value={searchQuery}
-                onChange={handleSearchChange}
-              />
-              <Button variant="outline" size="icon" aria-label="Search">
-                <Search className="h-5 w-5"/>
-              </Button>
-            </div>
-          </section>
-
           {/* Latest Posts */}
           <section>
             <h2 className="text-2xl md:text-3xl font-bold mb-8 font-headline text-center">Latest Posts</h2>
