@@ -2,6 +2,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,6 +13,8 @@ import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { Post } from '@/lib/data';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 type Props = {
   params: { slug: string };
@@ -57,6 +60,14 @@ export default async function ArticlePage({ params }: Props) {
       <main className="flex-grow py-8 md:py-12">
         <article className="animate-fade-in-up">
           <div className="container mx-auto px-4 md:px-6 max-w-4xl">
+            <div className="mb-8">
+                <Button asChild variant="ghost" className="pl-0 text-muted-foreground hover:text-primary">
+                    <Link href="/">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to All Posts
+                    </Link>
+                </Button>
+            </div>
             <header className="mb-8 md:mb-12 text-center animate-fade-in">
               <h1 className="text-3xl md:text-5xl font-bold font-headline leading-tight mb-4">
                 {post.title}
