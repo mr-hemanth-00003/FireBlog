@@ -1,6 +1,7 @@
+
 import { MetadataRoute } from 'next';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 import { Post } from '@/lib/data';
 
 const SITE_URL = 'https://fireblog-vg986.web.app';
@@ -13,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const postsCollection = collection(db, 'posts');
-  const q = query(postsCollection, orderBy('date', 'desc'));
+  const q = query(postsCollection, where('isArchived', '==', false), orderBy('date', 'desc'));
   const snapshot = await getDocs(q);
   const posts = snapshot.docs.map(doc => doc.data() as Post);
 

@@ -23,7 +23,7 @@ import {
   SidebarInset,
   useSidebar
 } from '@/components/ui/sidebar';
-import { Feather, LayoutDashboard, FileText, Settings, Bot, Home, LogOut, Loader2, MessageSquare, Users } from 'lucide-react';
+import { Feather, LayoutDashboard, FileText, Settings, Archive, Home, LogOut, Loader2, MessageSquare, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -51,8 +51,12 @@ const navItems = [
     },
     {
         label: 'Posts',
-        href: '/admin/posts',
         icon: FileText,
+        subItems: [
+            { label: 'Published', href: '/admin/posts' },
+            { label: 'Archived', href: '/admin/posts/archived' },
+            { label: 'New Post', href: '/admin/posts/new' },
+        ],
     },
     {
         label: 'Messages',
@@ -156,10 +160,10 @@ function AdminSidebar() {
             <SidebarContent className="p-2">
                 <SidebarMenu>
                     {navItems.map((item) => (
-                        'subItems' in item && item.subItems ? (
+                         'subItems' in item && item.subItems ? (
                             <SidebarMenuItem key={item.label}>
                                 <SidebarMenuButton
-                                    isActive={item.subItems.some(si => pathname.startsWith(si.href))}
+                                    isActive={item.subItems.some(si => pathname === si.href || (si.href !== '/admin/posts' && pathname.startsWith(si.href)))}
                                     className="justify-between"
                                 >
                                     <div className="flex items-center gap-2">
@@ -171,7 +175,7 @@ function AdminSidebar() {
                                     {item.subItems.map(subItem => (
                                         <SidebarMenuSubItem key={subItem.label}>
                                             <Link href={subItem.href}>
-                                                <SidebarMenuSubButton isActive={pathname.startsWith(subItem.href)}>
+                                                <SidebarMenuSubButton isActive={pathname === subItem.href}>
                                                     {subItem.label}
                                                 </SidebarMenuSubButton>
                                             </Link>

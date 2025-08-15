@@ -21,6 +21,7 @@ export default function NewPostPage() {
         ...data,
         slug,
         date: new Date().toISOString(),
+        isArchived: data.isArchived || false,
       };
 
       // Add a new document with a generated id.

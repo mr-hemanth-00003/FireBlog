@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Search, Loader2 } from 'lucide-react';
 import { db } from '@/lib/firebase';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, where } from 'firebase/firestore';
 
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -23,7 +23,7 @@ export default function Home() {
   
   useEffect(() => {
     const postsCollection = collection(db, 'posts');
-    const q = query(postsCollection, orderBy('date', 'desc'));
+    const q = query(postsCollection, where('isArchived', '==', false), orderBy('date', 'desc'));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const postsData = snapshot.docs.map(doc => ({ slug: doc.id, ...doc.data() } as Post));
@@ -96,7 +96,7 @@ export default function Home() {
             {/* <!-- Ad Placeholder 1 --> */}
           </Card>
 
-          {posts.length === 0 && (
+          {posts.length === 0 && !loading && (
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-4">No Posts Found</h2>
               <p className="text-muted-foreground">There are no posts available. Check back later!</p>

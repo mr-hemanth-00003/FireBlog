@@ -50,7 +50,7 @@ function EditPostForm({ slug }: { slug: string }) {
         description: 'Your changes have been saved successfully.',
       });
 
-      router.push('/admin/posts');
+      router.push(updatedData.isArchived ? '/admin/posts/archived' : '/admin/posts');
     } catch (error) {
       console.error("Error updating document: ", error);
       toast({

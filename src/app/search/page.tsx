@@ -9,7 +9,7 @@ import { ArticleCard } from '@/components/article-card';
 import { Post } from '@/lib/data';
 import { Loader2, Search } from 'lucide-react';
 import { db } from '@/lib/firebase';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, where } from 'firebase/firestore';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -28,7 +28,7 @@ function SearchResults() {
   
   useEffect(() => {
     const postsCollection = collection(db, 'posts');
-    const postsQuery = query(postsCollection, orderBy('date', 'desc'));
+    const postsQuery = query(postsCollection, where('isArchived', '==', false), orderBy('date', 'desc'));
 
     const unsubscribe = onSnapshot(postsQuery, (snapshot) => {
       const postsData = snapshot.docs.map(doc => ({ slug: doc.id, ...doc.data() } as Post));

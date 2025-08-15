@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import type { Post } from '@/lib/data';
 import { Loader2 } from 'lucide-react';
+import { Switch } from './ui/switch';
 
 const formSchema = z.object({
   title: z.string().min(5, { message: 'Title must be at least 5 characters long.' }),
@@ -22,6 +23,7 @@ const formSchema = z.object({
     avatarUrl: z.string().url({ message: 'Please enter a valid avatar URL.' }),
   }),
   tags: z.string().min(1, { message: 'Please enter at least one tag.' }),
+  isArchived: z.boolean().default(false),
 });
 
 type FormValues = Omit<Post, 'slug' | 'date' | 'tags'> & { tags: string };
@@ -32,7 +34,7 @@ interface PostFormProps {
 }
 
 export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
-  const form = useForm<FormValues>({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: defaultValues?.title || '',
@@ -45,12 +47,13 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
         avatarUrl: defaultValues?.author?.avatarUrl || 'https://placehold.co/40x40.png',
       },
       tags: defaultValues?.tags?.join(', ') || '',
+      isArchived: defaultValues?.isArchived || false,
     },
   });
 
   const { isSubmitting } = form.formState;
 
-  const handleSubmit = (values: FormValues) => {
+  const handleSubmit = (values: z.infer<typeof formSchema>) => {
     const postData = {
       ...values,
       tags: values.tags.split(',').map(tag => tag.trim()),
@@ -73,6 +76,30 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
               <FormMessage />
             </FormItem>
           )}
+        />
+        <FormField
+            control={form.control}
+            name="isArchived"
+            render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                    <FormLabel className="text-base">Post Status</FormLabel>
+                    <FormDescription>
+                        Published posts are visible on the site. Archived posts are hidden.
+                    </FormDescription>
+                </div>
+                <FormControl>
+                    <div className="flex items-center space-x-2">
+                         <span className={field.value ? 'text-muted-foreground' : ''}>Published</span>
+                         <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                        />
+                        <span className={field.value ? '' : 'text-muted-foreground'}>Archived</span>
+                    </div>
+                </FormControl>
+                </FormItem>
+            )}
         />
         <FormField
           control={form.control}

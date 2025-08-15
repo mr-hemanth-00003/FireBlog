@@ -12,4 +12,5 @@ export interface Post {
   };
   date: string; // Should be ISO string
   tags: string[];
+  isArchived: boolean;
 }

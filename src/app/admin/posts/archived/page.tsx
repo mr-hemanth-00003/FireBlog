@@ -13,7 +13,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { MoreHorizontal, Archive, Trash2 } from 'lucide-react';
+import { MoreHorizontal, ArchiveRestore, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +37,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-export default function PostsPage() {
+export default function ArchivedPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -46,7 +46,7 @@ export default function PostsPage() {
 
   useEffect(() => {
     const postsCollection = collection(db, 'posts');
-    const q = query(postsCollection, where('isArchived', '==', false));
+    const q = query(postsCollection, where('isArchived', '==', true));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const postsData = snapshot.docs.map(doc => ({ slug: doc.id, ...doc.data() } as Post));
       setPosts(postsData);
@@ -59,22 +59,22 @@ export default function PostsPage() {
     setDeleting(slug);
     setIsAlertOpen(true);
   };
-
-  const handleArchiveClick = async (slug: string) => {
+  
+  const handleUnarchiveClick = async (slug: string) => {
     try {
       const postRef = doc(db, 'posts', slug);
-      await updateDoc(postRef, { isArchived: true });
+      await updateDoc(postRef, { isArchived: false });
       toast({
-        title: 'Post Archived',
-        description: 'The post has been moved to the archive.',
+        title: 'Post Unarchived',
+        description: 'The post has been moved back to published.',
       });
     } catch (error) {
        toast({
         title: 'Error',
-        description: 'Failed to archive the post. Please try again.',
+        description: 'Failed to unarchive the post. Please try again.',
         variant: 'destructive',
       });
-      console.error("Error archiving document: ", error);
+      console.error("Error unarchiving document: ", error);
     }
   }
 
@@ -103,26 +103,16 @@ export default function PostsPage() {
     <>
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Published Posts</CardTitle>
-              <CardDescription>Manage your published articles.</CardDescription>
-            </div>
-            <Button asChild>
-              <Link href="/admin/posts/new">Create Post</Link>
-            </Button>
-          </div>
+          <CardTitle>Archived Posts</CardTitle>
+          <CardDescription>Manage your archived articles.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="hidden w-[100px] sm:table-cell">
-                  Image
-                </TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Author</TableHead>
-                <TableHead className="hidden md:table-cell">Date</TableHead>
+                <TableHead className="hidden md:table-cell">Date Archived</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -131,22 +121,11 @@ export default function PostsPage() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center">Loading posts...</TableCell>
+                  <TableCell colSpan={4} className="text-center">Loading archived posts...</TableCell>
                 </TableRow>
               ) : posts.length > 0 ? (
                 posts.map((post) => (
                     <TableRow key={post.slug}>
-                    <TableCell className="hidden sm:table-cell">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                        alt={post.title}
-                        className="aspect-square rounded-md object-cover"
-                        height="64"
-                        src={post.imageUrl}
-                        width="64"
-                        data-ai-hint={post.imageHint}
-                        />
-                    </TableCell>
                     <TableCell className="font-medium">{post.title}</TableCell>
                     <TableCell>{post.author.name}</TableCell>
                     <TableCell className="hidden md:table-cell">{new Date(post.date).toLocaleDateString()}</TableCell>
@@ -161,16 +140,16 @@ export default function PostsPage() {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem asChild>
-                            <Link href={`/admin/posts/edit/${post.slug}`}>Edit</Link>
+                                <Link href={`/admin/posts/edit/${post.slug}`}>Edit</Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleArchiveClick(post.slug)}>
-                                <Archive className="mr-2 h-4 w-4" />
-                                Archive
+                            <DropdownMenuItem onClick={() => handleUnarchiveClick(post.slug)}>
+                                <ArchiveRestore className="mr-2 h-4 w-4" />
+                                Unarchive
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => handleDeleteClick(post.slug)} className="text-destructive">
                                 <Trash2 className="mr-2 h-4 w-4" />
-                                Delete
+                                Delete Permanently
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                         </DropdownMenu>
@@ -179,7 +158,7 @@ export default function PostsPage() {
               ))
               ) : (
                 <TableRow>
-                    <TableCell colSpan={5} className="text-center">No published posts found.</TableCell>
+                    <TableCell colSpan={4} className="text-center">No archived posts found.</TableCell>
                 </TableRow>
               )}
             </TableBody>

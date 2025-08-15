@@ -14,7 +14,7 @@ import { Post } from '@/lib/data';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Share2 } from 'lucide-react';
 import { ShareButton } from '@/components/share-button';
 
 type Props = {
@@ -27,7 +27,10 @@ async function getPost(slug: string): Promise<Post | null> {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    return { slug: docSnap.id, ...docSnap.data() } as Post;
+    const postData = { slug: docSnap.id, ...docSnap.data() } as Post;
+    // Don't show archived posts on public site
+    if (postData.isArchived) return null;
+    return postData;
   } else {
     return null;
   }
@@ -137,7 +140,8 @@ export default async function ArticlePage({ params }: Props) {
 export async function generateStaticParams() {
   try {
     const postsCol = collection(db, 'posts');
-    const postSnapshot = await getDocs(postsCol);
+    const q = query(postsCol, where('isArchived', '==', false));
+    const postSnapshot = await getDocs(q);
     const posts = postSnapshot.docs.map(doc => ({ slug: doc.id }));
     return posts;
   } catch (error) {
