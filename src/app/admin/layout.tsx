@@ -175,22 +175,16 @@ function AdminSidebar() {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head />
-      <body className={cn("min-h-screen w-full bg-background font-sans antialiased")}>
-        <SidebarProvider>
-            <div className="flex min-h-screen w-full">
-                <AdminSidebar />
-                <div className="flex flex-col flex-1">
-                     <AdminHeader />
-                     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40">
-                        {children}
-                     </main>
-                </div>
+    <SidebarProvider>
+        <div className="flex min-h-screen w-full">
+            <AdminSidebar />
+            <div className="flex flex-col flex-1">
+                 <AdminHeader />
+                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40">
+                    {children}
+                 </main>
             </div>
-        </SidebarProvider>
-        <Toaster />
-      </body>
-    </html>
+        </div>
+    </SidebarProvider>
   );
 }
