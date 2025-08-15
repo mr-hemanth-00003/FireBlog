@@ -15,12 +15,15 @@ interface ArticleCardProps {
 export function ArticleCard({ post, hideContent = false }: ArticleCardProps) {
   if (hideContent) {
      return (
-        <div className="relative overflow-hidden rounded-lg aspect-video">
+        <div className="relative overflow-hidden rounded-lg">
          <Link href={`/article/${post.slug}`} className="block overflow-hidden" aria-label={`Read more about ${post.title}`}>
             <Image
                 src={post.imageUrl}
                 alt={post.title}
-                fill
+                width={0}
+                height={0}
+                sizes="100vw"
+                style={{ width: '100%', height: 'auto' }}
                 className="object-cover transition-transform duration-500 ease-in-out hover:scale-105"
                 data-ai-hint={post.imageHint}
             />
