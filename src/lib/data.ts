@@ -81,7 +81,7 @@ body {
     },
     date: 'October 22, 2023',
   },
-    {
+  {
     slug: 'seo-optimization-basics',
     title: 'SEO Optimization Basics for Your Website',
     excerpt: 'Learn the fundamentals of Search Engine Optimization (SEO) to increase your site\'s visibility and attract more organic traffic.',
@@ -101,5 +101,76 @@ body {
       avatarUrl: 'https://placehold.co/40x40.png',
     },
     date: 'October 18, 2023',
+  },
+  {
+    slug: 'react-hooks-guide',
+    title: 'The Ultimate Guide to React Hooks',
+    excerpt: 'Unlock the full potential of functional components with React Hooks. This guide covers useState, useEffect, and custom hooks.',
+    content: `
+      <p class="mb-4 text-lg leading-relaxed">React Hooks revolutionized how we write React components. They allow you to use state and other React features without writing a class. This leads to cleaner, more readable, and more composable code.</p>
+      <h3 class="text-2xl font-bold mt-8 mb-4 font-headline">The <code>useState</code> Hook</h3>
+      <p class="mb-4 text-lg leading-relaxed">The <code>useState</code> hook is the most basic and essential hook. It lets you add state to functional components. When you call <code>useState</code>, you get back a pair: the current state value and a function that lets you update it.</p>
+      <img src="https://placehold.co/800x400.png" alt="React code snippet" data-ai-hint="react code" class="rounded-lg my-6 shadow-md" />
+      <h3 class="text-2xl font-bold mt-8 mb-4 font-headline">The <code>useEffect</code> Hook</h3>
+      <p class="mb-4 text-lg leading-relaxed">The <code>useEffect</code> hook lets you perform side effects in functional components. It's a close replacement for <code>componentDidMount</code>, <code>componentDidUpdate</code>, and <code>componentWillUnmount</code> in class components.</p>
+      <p class="text-lg leading-relaxed">By mastering these fundamental hooks, you'll be able to build powerful and efficient React applications.</p>
+    `,
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'react logo',
+    author: {
+      name: 'Emily White',
+      avatarUrl: 'https://placehold.co/40x40.png',
+    },
+    date: 'October 15, 2023',
+  },
+  {
+    slug: 'scalable-nodejs-api',
+    title: 'Building a Scalable API with Node.js and Express',
+    excerpt: 'Learn the best practices for building robust and scalable RESTful APIs using Node.js and the Express framework.',
+    content: `
+      <p class="mb-4 text-lg leading-relaxed">Node.js, with its non-blocking I/O and event-driven architecture, is a perfect choice for building fast and scalable network applications. When combined with Express, a minimal and flexible Node.js web application framework, you have a powerful duo for API development.</p>
+      <h3 class="text-2xl font-bold mt-8 mb-4 font-headline">Structuring Your Project</h3>
+      <p class="mb-4 text-lg leading-relaxed">A well-structured project is crucial for maintainability. A common approach is to separate your concerns: routes, controllers, services, and models. This makes your codebase easier to navigate and debug as it grows.</p>
+      <pre class="bg-card p-4 rounded-lg my-6 overflow-x-auto border"><code class="font-code text-sm">/
+|-- src/
+|   |-- api/
+|   |   |-- routes/
+|   |   |-- controllers/
+|   |   |-- models/
+|   |-- config/
+|   |-- app.js
+|-- package.json</code></pre>
+      <h3 class="text-2xl font-bold mt-8 mb-4 font-headline">Middleware and Error Handling</h3>
+      <p class="mb-4 text-lg leading-relaxed">Express middleware functions are the backbone of any Express app. They can perform tasks like logging, authentication, and body parsing. Proper error handling middleware is also essential for catching and responding to errors gracefully.</p>
+      <p class="text-lg leading-relaxed">Follow these principles to build APIs that are not only functional but also ready to handle production-level traffic.</p>
+    `,
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'server infrastructure',
+    author: {
+      name: 'Michael Brown',
+      avatarUrl: 'https://placehold.co/40x40.png',
+    },
+    date: 'October 11, 2023',
+  },
+  {
+    slug: 'demystifying-tailwind-css',
+    title: 'Demystifying Tailwind CSS for Beginners',
+    excerpt: 'Tailwind CSS is a utility-first CSS framework that can be composed to build any design, directly in your markup. Let\'s break it down.',
+    content: `
+      <p class="mb-4 text-lg leading-relaxed">Tailwind CSS is different from frameworks like Bootstrap or Foundation. Instead of providing pre-styled components, it provides low-level utility classes that let you build completely custom designs without ever leaving your HTML.</p>
+      <h3 class="text-2xl font-bold mt-8 mb-4 font-headline">Utility-First Fundamentals</h3>
+      <p class="mb-4 text-lg leading-relaxed">The core concept of Tailwind is its utility-first approach. A class like <code>flex</code>, <code>pt-4</code>, or <code>text-center</code> has a single, specific purpose. By combining these, you can build complex components without writing custom CSS.</p>
+      <img src="https://placehold.co/800x400.png" alt="Tailwind CSS utilities" data-ai-hint="tailwind code" class="rounded-lg my-6 shadow-md" />
+      <h3 class="text-2xl font-bold mt-8 mb-4 font-headline">Customization and Performance</h3>
+      <p class="mb-4 text-lg leading-relaxed">Tailwind is highly customizable via its <code>tailwind.config.js</code> file. You can configure everything from your color palette to spacing scales. When it's time for production, Tailwind automatically removes all unused CSS, resulting in a tiny, optimized final bundle.</p>
+      <p class="text-lg leading-relaxed">While it may seem verbose at first, the utility-first workflow can dramatically speed up development and improve maintainability.</p>
+    `,
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'css design',
+    author: {
+      name: 'Jessica Green',
+      avatarUrl: 'https://placehold.co/40x40.png',
+    },
+    date: 'October 07, 2023',
   }
 ];
