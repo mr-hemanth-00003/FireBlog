@@ -5,9 +5,9 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, MessageSquare, PlusCircle, Tag, Users } from 'lucide-react';
+import { Eye, FileText, MessageSquare, PlusCircle, Tag, Users } from 'lucide-react';
 import { db } from '@/lib/firebase';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, getDocs } from 'firebase/firestore';
 import { Post } from '@/lib/data';
 import { PostsChart } from '@/components/posts-chart';
 
@@ -18,6 +18,7 @@ export default function DashboardPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [teamCount, setTeamCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
+  const [visitorCount, setVisitorCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,10 +36,25 @@ export default function DashboardPage() {
         setMessageCount(snapshot.size);
     });
 
+    const fetchVisitors = async () => {
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const visitorsQuery = query(collection(db, 'visitors'), where('timestamp', '>=', twentyFourHoursAgo));
+        const visitorsSnapshot = await getDocs(visitorsQuery);
+        const uniqueVisitors = new Set(visitorsSnapshot.docs.map(doc => doc.data().visitorId));
+        setVisitorCount(uniqueVisitors.size);
+    }
+    
+    // We can fetch visitors once and then poll or listen for real-time updates if needed.
+    // For simplicity, we'll fetch on load and then maybe on an interval if required.
+    fetchVisitors();
+    const visitorInterval = setInterval(fetchVisitors, 60000); // Refresh every minute
+
+
     return () => {
         postsUnsub();
         teamUnsub();
         messagesUnsub();
+        clearInterval(visitorInterval);
     };
   }, []);
   
@@ -75,12 +91,12 @@ export default function DashboardPage() {
             </Card>
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Messages</CardTitle>
-                <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Visitors (24h)</CardTitle>
+                <Eye className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                <div className="text-2xl font-bold">+{loading ? '...' : messageCount}</div>
-                <p className="text-xs text-muted-foreground">new messages this month</p>
+                <div className="text-2xl font-bold">{loading ? '...' : visitorCount}</div>
+                <p className="text-xs text-muted-foreground">unique visitors in last 24h</p>
                 </CardContent>
             </Card>
             <Card>
@@ -111,25 +127,33 @@ export default function DashboardPage() {
             </div>
             <Card className="col-span-12 lg:col-span-3">
                 <CardHeader>
-                    <CardTitle>Recent Posts</CardTitle>
+                     <CardTitle>Recent Activity</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="space-y-4">
-                        {loading ? <p>Loading posts...</p> : posts.slice(0, 5).map((post) => (
-                            <div key={post.slug} className="flex items-center justify-between">
-                                <div>
-                                    <Link href={`/article/${post.slug}`} className="font-medium hover:underline" target="_blank">
-                                        {post.title}
-                                    </Link>
-                                    <p className="text-sm text-muted-foreground">{post.author.name} &middot; {new Date(post.date).toLocaleDateString()}</p>
+                    <div className="space-y-6">
+                        <div>
+                             <h3 className="text-sm font-medium text-muted-foreground mb-2">Recent Posts</h3>
+                             {loading ? <p>Loading posts...</p> : posts.slice(0, 3).map((post) => (
+                                <div key={post.slug} className="flex items-center justify-between mb-2">
+                                    <div>
+                                        <Link href={`/article/${post.slug}`} className="font-medium hover:underline text-sm" target="_blank">
+                                            {post.title}
+                                        </Link>
+                                        <p className="text-xs text-muted-foreground">{post.author.name}</p>
+                                    </div>
+                                    <Button asChild variant="outline" size="sm">
+                                        <Link href={`/admin/posts/edit/${post.slug}`}>
+                                            Edit
+                                        </Link>
+                                    </Button>
                                 </div>
-                                <Button asChild variant="outline" size="sm">
-                                    <Link href={`/admin/posts/edit/${post.slug}`}>
-                                        Edit
-                                    </Link>
-                                </Button>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
+                        <div>
+                             <h3 className="text-sm font-medium text-muted-foreground mb-2">Recent Messages</h3>
+                              <div className="text-2xl font-bold">+{loading ? '...' : messageCount}</div>
+                              <p className="text-xs text-muted-foreground">new messages this month</p>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
