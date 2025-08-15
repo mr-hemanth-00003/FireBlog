@@ -56,9 +56,7 @@ function SearchResults() {
   };
 
   const filteredPosts = allPosts.filter(post =>
-    post.title.toLowerCase().includes(q.toLowerCase()) ||
-    post.excerpt.toLowerCase().includes(q.toLowerCase()) ||
-    post.content.toLowerCase().includes(q.toLowerCase())
+    post.title.toLowerCase().includes(q.toLowerCase())
   );
 
   return (
