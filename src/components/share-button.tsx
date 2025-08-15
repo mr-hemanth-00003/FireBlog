@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Share2, Copy } from 'lucide-react';
+import { Share2 } from 'lucide-react';
 import type { Post } from '@/lib/data';
 
 interface ShareButtonProps {
@@ -13,7 +13,6 @@ interface ShareButtonProps {
 
 export function ShareButton({ post }: ShareButtonProps) {
   const { toast } = useToast();
-  const [hasShared, setHasShared] = useState(false);
 
   const handleShare = async () => {
     const shareData = {
@@ -25,9 +24,9 @@ export function ShareButton({ post }: ShareButtonProps) {
     if (navigator.share) {
       try {
         await navigator.share(shareData);
-        setHasShared(true);
       } catch (error) {
         console.error('Error sharing:', error);
+        // User cancelled share, no need to show an error
       }
     } else {
       // Fallback for browsers that don't support Web Share API
@@ -49,9 +48,15 @@ export function ShareButton({ post }: ShareButtonProps) {
   };
 
   return (
-    <Button onClick={handleShare} variant="outline">
-      <Share2 className="mr-2 h-4 w-4" />
-      Share
-    </Button>
+    <div className="fixed bottom-8 right-8 z-50">
+        <Button 
+            onClick={handleShare} 
+            size="icon"
+            className="w-14 h-14 rounded-full shadow-lg"
+        >
+        <Share2 className="h-6 w-6" />
+        <span className="sr-only">Share Post</span>
+        </Button>
+    </div>
   );
 }

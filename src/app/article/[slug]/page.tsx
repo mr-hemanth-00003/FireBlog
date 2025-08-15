@@ -84,7 +84,6 @@ export default async function ArticlePage({ params }: Props) {
                 <span>&middot;</span>
                 <time dateTime={post.date}>{new Date(post.date).toLocaleDateString()}</time>
               </div>
-              <ShareButton post={post} />
             </header>
             
             <Card className="overflow-hidden mb-8 md:mb-12 shadow-lg animate-fade-in-up animation-delay-200">
@@ -129,6 +128,7 @@ export default async function ArticlePage({ params }: Props) {
           </div>
         </article>
       </main>
+      <ShareButton post={post} />
       <Footer />
     </div>
   );
