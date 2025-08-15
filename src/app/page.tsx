@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { ArticleCard } from '@/components/article-card';
@@ -18,7 +19,7 @@ export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [submittedQuery, setSubmittedQuery] = useState('');
+  const router = useRouter();
   
   useEffect(() => {
     const postsCollection = collection(db, 'posts');
@@ -36,28 +37,14 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-    // Live search as user types
-    if (event.target.value === '') {
-        setSubmittedQuery('');
-    }
-  };
-
   const handleSearchSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-        setSubmittedQuery(searchQuery);
+    if (event.key === 'Enter' && searchQuery.trim() !== '') {
+        router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
   
-  const queryToFilter = submittedQuery || searchQuery;
-  const filteredPosts = posts.filter(post =>
-    post.title.toLowerCase().includes(queryToFilter.toLowerCase()) ||
-    post.excerpt.toLowerCase().includes(queryToFilter.toLowerCase())
-  );
-  
-  const featuredPost = filteredPosts[0];
-  const otherPosts = filteredPosts.slice(1);
+  const featuredPost = posts[0];
+  const otherPosts = posts.slice(1);
 
   if (loading) {
     return (
@@ -82,10 +69,10 @@ export default function Home() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search for articles by title or content..."
+                placeholder="Search for articles and press Enter..."
                 className="w-full pl-10"
                 value={searchQuery}
-                onChange={handleSearchChange}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleSearchSubmit}
               />
             </div>
@@ -97,14 +84,10 @@ export default function Home() {
             {/* <!-- Ad Placeholder 1 --> */}
           </Card>
 
-          {filteredPosts.length === 0 && (
+          {posts.length === 0 && (
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-4">No Posts Found</h2>
-                {queryToFilter ? (
-                    <p className="text-muted-foreground">Your search for "{queryToFilter}" did not return any results.</p>
-                ) : (
-                    <p className="text-muted-foreground">There are no posts available. Check back later!</p>
-                )}
+              <p className="text-muted-foreground">There are no posts available. Check back later!</p>
             </div>
           )}
 
@@ -112,20 +95,22 @@ export default function Home() {
           {featuredPost && (
             <section className="mb-12 md:mb-16 animate-fade-in-up animation-delay-200">
               <Card className="overflow-hidden">
-                  <div className="grid md:grid-cols-2 gap-8 items-center">
-                    <div className="p-8 md:p-12">
+                  <div className="grid md:grid-cols-2 gap-0 items-center">
+                    <div className="p-8 md:p-12 order-2 md:order-1">
                       <p className="text-primary font-semibold mb-2 font-headline">Featured Article</p>
                       <h1 className="text-3xl md:text-4xl font-bold mb-4 font-headline leading-tight">
                         <Link href={`/article/${featuredPost.slug}`} className="hover:text-primary transition-colors">
                           {featuredPost.title}
                         </Link>
                       </h1>
-                      <p className="text-muted-foreground md:text-lg mb-6">{featuredPost.excerpt}</p>
-                      <Button asChild size="lg">
+                      <div className="mb-6">
+                        <p className="text-muted-foreground md:text-lg">{featuredPost.excerpt}</p>
+                      </div>
+                       <Button asChild size="lg">
                         <Link href={`/article/${featuredPost.slug}`}>Read Full Story</Link>
                       </Button>
                     </div>
-                    <div className="">
+                    <div className="order-1 md:order-2">
                        <ArticleCard post={featuredPost} hideContent={true} />
                     </div>
                   </div>
