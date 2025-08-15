@@ -2,22 +2,29 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { ArticleCard } from '@/components/article-card';
 import { Post } from '@/lib/data';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { Input } from '@/components/ui/input';
 
 function SearchResults() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const q = searchParams.get('q') || '';
   
   const [allPosts, setAllPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(q);
 
+  useEffect(() => {
+    setSearchQuery(q);
+  }, [q]);
+  
   useEffect(() => {
     const postsCollection = collection(db, 'posts');
     const postsQuery = query(postsCollection, orderBy('date', 'desc'));
@@ -34,6 +41,12 @@ function SearchResults() {
     return () => unsubscribe();
   }, []);
 
+  const handleSearchSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && searchQuery.trim() !== '') {
+        router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   const filteredPosts = allPosts.filter(post =>
     post.title.toLowerCase().includes(q.toLowerCase()) ||
     post.excerpt.toLowerCase().includes(q.toLowerCase()) ||
@@ -45,6 +58,20 @@ function SearchResults() {
       <Header />
       <main className="flex-grow">
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
+            <section className="mb-8">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search for articles and press Enter..."
+                  className="w-full pl-10"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleSearchSubmit}
+                />
+              </div>
+            </section>
+            
             <h1 className="text-3xl md:text-4xl font-bold font-headline mb-8">
                 Search Results for &quot;<span className="text-primary">{q}</span>&quot;
             </h1>
