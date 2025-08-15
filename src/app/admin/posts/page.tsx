@@ -37,6 +37,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Badge } from '@/components/ui/badge';
+import { format } from 'date-fns';
 
 export default function PostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -160,7 +161,7 @@ export default function PostsPage() {
                         )}
                     </TableCell>
                     <TableCell>{post.author.name}</TableCell>
-                    <TableCell className="hidden md:table-cell">{new Date(post.publishDate).toLocaleDateString()}</TableCell>
+                    <TableCell className="hidden md:table-cell">{format(new Date(post.publishDate), "PPp")}</TableCell>
                     <TableCell>
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild>

@@ -15,6 +15,8 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Calendar } from './ui/calendar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import React from 'react';
 
 const formSchema = z.object({
   title: z.string().min(5, { message: 'Title must be at least 5 characters long.' }),
@@ -68,6 +70,19 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
     onSubmit(postData);
   };
 
+  const publishDateValue = form.watch('publishDate');
+
+  const handleTimeChange = (type: 'hours' | 'minutes', value: string) => {
+    const date = new Date(publishDateValue);
+    const numericValue = parseInt(value, 10);
+    if (type === 'hours') {
+        date.setHours(numericValue);
+    } else {
+        date.setMinutes(numericValue);
+    }
+    form.setValue('publishDate', date, { shouldDirty: true });
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
@@ -113,40 +128,76 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
           name="publishDate"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Publish Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
+              <FormLabel>Publish Date & Time</FormLabel>
+              <div className="flex items-center gap-4">
+                 <Popover>
+                    <PopoverTrigger asChild>
+                    <FormControl>
+                        <Button
+                        variant={"outline"}
+                        className={cn(
+                            "w-[280px] justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                        )}
+                        >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value ? (
+                            format(field.value, "PPP p")
+                        ) : (
+                            <span>Pick a date</span>
+                        )}
+                        </Button>
+                    </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={(date) => {
+                            if (!date) return;
+                            const newDate = new Date(field.value);
+                            newDate.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+                            field.onChange(newDate);
+                        }}
+                        disabled={(date) =>
+                            date < new Date(new Date().setHours(0, 0, 0, 0))
+                        }
+                        initialFocus
+                    />
+                    </PopoverContent>
+                </Popover>
+                 <div className="flex items-center gap-2">
+                    <Select
+                        onValueChange={(value) => handleTimeChange('hours', value)}
+                        defaultValue={String(publishDateValue.getHours())}
                     >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date < new Date(new Date().setHours(0, 0, 0, 0))
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+                        <SelectTrigger className="w-[80px]">
+                            <SelectValue placeholder="HH" />
+                        </SelectTrigger>
+                        <SelectContent>
+                           {Array.from({ length: 24 }, (_, i) => (
+                                <SelectItem key={i} value={String(i)}>{String(i).padStart(2, '0')}</SelectItem>
+                           ))}
+                        </SelectContent>
+                    </Select>
+                     <span className="font-bold">:</span>
+                    <Select
+                         onValueChange={(value) => handleTimeChange('minutes', value)}
+                         defaultValue={String(publishDateValue.getMinutes())}
+                    >
+                        <SelectTrigger className="w-[80px]">
+                             <SelectValue placeholder="MM" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {Array.from({ length: 60 }, (_, i) => (
+                                 <SelectItem key={i} value={String(i)}>{String(i).padStart(2, '0')}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                 </div>
+              </div>
               <FormDescription>
-                Set a date in the future to schedule the post.
+                Set a date and time in the future to schedule the post.
               </FormDescription>
               <FormMessage />
             </FormItem>

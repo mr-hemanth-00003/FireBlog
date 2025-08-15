@@ -16,6 +16,7 @@ import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Share2 } from 'lucide-react';
 import { ShareButton } from '@/components/share-button';
+import { format } from 'date-fns';
 
 type Props = {
   params: { slug: string };
@@ -86,7 +87,7 @@ export default async function ArticlePage({ params }: Props) {
                   <span>{post.author.name}</span>
                 </div>
                 <span>&middot;</span>
-                <time dateTime={post.publishDate}>{new Date(post.publishDate).toLocaleDateString()}</time>
+                <time dateTime={post.publishDate}>{format(new Date(post.publishDate), "PPp")}</time>
               </div>
             </header>
             

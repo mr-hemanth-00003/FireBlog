@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from './ui/button';
 import { ArrowRight } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface ArticleCardProps {
   post: Post;
@@ -64,7 +65,7 @@ export function ArticleCard({ post, hideContent = false }: ArticleCardProps) {
           </Avatar>
           <div>
             <p className="text-sm font-medium">{post.author.name}</p>
-            <p className="text-xs text-muted-foreground">{new Date(post.publishDate).toLocaleDateString()}</p>
+            <p className="text-xs text-muted-foreground">{format(new Date(post.publishDate), "PP")}</p>
           </div>
         </div>
         <Button asChild variant="ghost" size="sm" className="text-primary hover:text-primary">
