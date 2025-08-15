@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Feather, Search, KeyRound } from 'lucide-react';
+import { Menu, X, Feather, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -67,12 +67,6 @@ export function Header({ searchQuery, onSearchChange }: HeaderProps) {
               {item.label}
             </Link>
           ))}
-            <Button asChild variant="outline" size="sm">
-              <Link href="/admin/dashboard">
-                <KeyRound className="mr-2 h-4 w-4" />
-                Admin
-              </Link>
-            </Button>
         </nav>
 
         <div className="md:hidden flex items-center gap-2">
@@ -95,12 +89,6 @@ export function Header({ searchQuery, onSearchChange }: HeaderProps) {
                 {item.label}
               </Link>
             ))}
-             <Button asChild variant="outline" className="mt-2">
-              <Link href="/admin/dashboard" onClick={() => setIsMenuOpen(false)}>
-                <KeyRound className="mr-2 h-4 w-4" />
-                Admin Panel
-              </Link>
-            </Button>
           </nav>
         </div>
       )}
