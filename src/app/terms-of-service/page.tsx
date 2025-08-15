@@ -1,7 +1,10 @@
 
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Terms of Service | FireBlog',
@@ -14,6 +17,14 @@ export default function TermsOfServicePage() {
       <Header />
       <main className="flex-grow py-12 md:py-20">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl">
+           <div className="mb-8">
+              <Button asChild variant="ghost" className="pl-0 text-muted-foreground hover:text-primary">
+                  <Link href="/">
+                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      Back to Home
+                  </Link>
+              </Button>
+          </div>
           <div className="prose dark:prose-invert lg:prose-xl max-w-none">
             <h1>Terms of Service for FireBlog</h1>
             <p><strong>Last Updated: {new Date().toLocaleDateString()}</strong></p>
