@@ -9,9 +9,26 @@ import { ArrowRight } from 'lucide-react';
 
 interface ArticleCardProps {
   post: Post;
+  hideContent?: boolean;
 }
 
-export function ArticleCard({ post }: ArticleCardProps) {
+export function ArticleCard({ post, hideContent = false }: ArticleCardProps) {
+  if (hideContent) {
+     return (
+        <div className="relative overflow-hidden rounded-lg aspect-video">
+         <Link href={`/article/${post.slug}`} className="block overflow-hidden" aria-label={`Read more about ${post.title}`}>
+            <Image
+                src={post.imageUrl}
+                alt={post.title}
+                fill
+                className="object-cover transition-transform duration-500 ease-in-out hover:scale-105"
+                data-ai-hint={post.imageHint}
+            />
+         </Link>
+        </div>
+     )
+  }
+
   return (
     <Card className="flex flex-col overflow-hidden h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <CardHeader className="p-0 border-b">

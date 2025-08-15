@@ -102,7 +102,7 @@ export default function Home() {
                     </Button>
                   </div>
                   <div className="order-1 md:order-2">
-                     <ArticleCard post={featuredPost} />
+                     <ArticleCard post={featuredPost} hideContent={true} />
                   </div>
                 </div>
             </Card>
