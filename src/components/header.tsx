@@ -7,6 +7,7 @@ import { Menu, X, Feather, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { SidebarTrigger } from './ui/sidebar';
 
 interface HeaderProps {
   searchQuery?: string;
@@ -18,10 +19,11 @@ export function Header({ searchQuery, onSearchChange }: HeaderProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const pathname = usePathname();
   const isHomePage = pathname === '/';
+  const isAdminPage = pathname.startsWith('/admin');
 
   const navItems = [
     { href: '/', label: 'Home' },
-    { href: '/admin/tag-suggester', label: 'AI Tagger' },
+    { href: '/admin', label: 'Admin' },
   ];
   
   const toggleMenu = () => {
@@ -37,10 +39,13 @@ export function Header({ searchQuery, onSearchChange }: HeaderProps) {
   return (
     <header className="bg-card/80 backdrop-blur-lg sticky top-0 z-40 w-full border-b">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-        <Link href="/" className="flex items-center gap-2" onClick={() => { setIsMenuOpen(false); setIsSearchOpen(false);}}>
-          <Feather className="h-6 w-6 text-primary transition-transform hover:rotate-12" />
-          <span className="font-bold text-lg font-headline">FireBlog</span>
-        </Link>
+        <div className="flex items-center gap-2">
+          {isAdminPage && <SidebarTrigger className="md:hidden" />}
+          <Link href="/" className="flex items-center gap-2" onClick={() => { setIsMenuOpen(false); setIsSearchOpen(false);}}>
+            <Feather className="h-6 w-6 text-primary transition-transform hover:rotate-12" />
+            <span className="font-bold text-lg font-headline">FireBlog</span>
+          </Link>
+        </div>
         
         {isHomePage && onSearchChange && (
           <div className="hidden md:flex items-center gap-2 max-w-sm flex-grow">
