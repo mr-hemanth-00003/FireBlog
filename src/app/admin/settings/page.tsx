@@ -35,9 +35,9 @@ const defaultSettings: SettingsFormValues = {
     siteUrl: 'http://localhost:9002',
     metaKeywords: 'blog, nextjs, firebase, web development',
     social: {
-        twitter: '#',
-        github: '#',
-        linkedin: '#'
+        twitter: '',
+        github: '',
+        linkedin: ''
     }
 };
 
@@ -55,7 +55,17 @@ export default function SettingsPage() {
         try {
             const settingsDoc = await getDoc(doc(db, 'settings', 'site'));
             if (settingsDoc.exists()) {
-                form.reset(settingsDoc.data() as SettingsFormValues);
+                const data = settingsDoc.data();
+                // Ensure social fields are not undefined
+                const settingsData = {
+                    ...defaultSettings,
+                    ...data,
+                    social: {
+                        ...defaultSettings.social,
+                        ...data.social,
+                    }
+                };
+                form.reset(settingsData as SettingsFormValues);
             }
         } catch (error) {
             console.error("Error fetching settings: ", error);

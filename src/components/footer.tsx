@@ -37,7 +37,7 @@ export function Footer() {
               <span className="text-xl font-bold font-headline">FireBlog</span>
             </div>
             <p className="text-muted-foreground text-sm max-w-sm mb-6">
-              The modern blog for developers. Explore the latest in web technology, from frontend frameworks to backend architecture.
+            FireBlog.pro delivers expert blogs on cybersecurity, ethical hacking, AI, cloud security, and the latest technology trends. Stay informed and secure in the digital world.
             </p>
             <NewsletterForm />
           </div>
