@@ -19,7 +19,11 @@ export function Footer() {
         if (doc.exists()) {
             const settings = doc.data() as SettingsFormValues;
             if (settings.social) {
-                setSocials(settings.social);
+                setSocials({
+                    twitter: settings.social.twitter || '#',
+                    github: settings.social.github || '#',
+                    linkedin: settings.social.linkedin || '#',
+                });
             }
         }
     });
