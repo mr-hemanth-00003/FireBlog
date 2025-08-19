@@ -1,31 +1,46 @@
-import type {Metadata} from 'next';
+
+'use client';
+
+import { useEffect, useState } from 'react';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { VisitorTracker } from '@/components/visitor-tracker';
 import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
-import { SettingsFormValues } from './admin/settings/page';
+import { doc, onSnapshot } from 'firebase/firestore';
+import type { SettingsFormValues } from './admin/settings/page';
 
+function LiveMetadata() {
+  const [settings, setSettings] = useState<SettingsFormValues | null>(null);
 
-export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const settingsDoc = await getDoc(doc(db, 'settings', 'site'));
-    if (settingsDoc.exists()) {
-      const settings = settingsDoc.data() as SettingsFormValues;
-      return {
-        title: settings.siteTitle,
-        description: settings.metaDescription,
-        keywords: settings.metaKeywords,
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, 'settings', 'site'), (doc) => {
+      if (doc.exists()) {
+        setSettings(doc.data() as SettingsFormValues);
+      }
+    });
+    return () => unsub();
+  }, []);
+
+  useEffect(() => {
+    if (settings) {
+      document.title = settings.siteTitle;
+      
+      const setMetaTag = (name: string, content: string) => {
+        let element = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+        if (!element) {
+          element = document.createElement('meta');
+          element.name = name;
+          document.head.appendChild(element);
+        }
+        element.content = content;
       };
+
+      setMetaTag('description', settings.metaDescription);
+      setMetaTag('keywords', settings.metaKeywords);
     }
-  } catch (error) {
-    console.error("Failed to fetch settings for metadata:", error);
-  }
-  
-  return {
-    title: 'FireBlog - A Modern Blog Template',
-    description: 'A clean and modern blog template built with Next.js and Firebase.',
-  };
+  }, [settings]);
+
+  return null;
 }
 
 
@@ -37,6 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <LiveMetadata />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
