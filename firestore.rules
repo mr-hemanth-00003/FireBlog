@@ -1,9 +1,8 @@
 
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow public read of posts and team members
+    // Allow public read access to posts and team members for the website
     match /posts/{postId} {
       allow read: if true;
       allow write: if request.auth != null;
@@ -14,16 +13,21 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
     
-    // Allow anyone to submit the contact form
+    // Allow anyone to submit to the contact form, but only admins to read/delete
     match /contacts/{contactId} {
       allow create: if true;
       allow read, update, delete: if request.auth != null;
     }
 
-    // Allow anyone to write to the visitors collection
+    // Allow anyone to be tracked as a visitor
     match /visitors/{visitorId} {
-      allow create: if true;
-      allow read, update, delete: if request.auth != null;
+        allow create: if true;
+    }
+    
+    // Allow admins to read/write settings, and public to read them.
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if request.auth != null;
     }
   }
 }
