@@ -1,12 +1,31 @@
 
+'use client';
 import Link from 'next/link';
 import { Feather, Github, Twitter, Linkedin, Rss } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { NewsletterForm } from './newsletter-form';
+import { useEffect, useState } from 'react';
+import { db } from '@/lib/firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { SettingsFormValues } from '@/app/admin/settings/page';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const [socials, setSocials] = useState({ twitter: '#', github: '#', linkedin: '#' });
+
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, 'settings', 'site'), (doc) => {
+        if (doc.exists()) {
+            const settings = doc.data() as SettingsFormValues;
+            if (settings.social) {
+                setSocials(settings.social);
+            }
+        }
+    });
+    return () => unsub();
+  }, []);
+
   return (
     <footer className="border-t bg-card text-card-foreground">
       <div className="container mx-auto px-4 md:px-6 py-12">
@@ -43,18 +62,18 @@ export function Footer() {
           <div className="lg:col-span-2">
             <h3 className="font-semibold font-headline text-foreground mb-4">Connect</h3>
              <div className="flex items-center gap-4">
-              <Button asChild variant="ghost" size="icon">
-                <Link href="#" aria-label="Twitter">
+              <Button asChild variant="ghost" size="icon" disabled={!socials.twitter || socials.twitter === '#'}>
+                <Link href={socials.twitter || '#'} aria-label="Twitter" target="_blank">
                   <Twitter className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
                 </Link>
               </Button>
-              <Button asChild variant="ghost" size="icon">
-                <Link href="#" aria-label="GitHub">
+              <Button asChild variant="ghost" size="icon" disabled={!socials.github || socials.github === '#'}>
+                <Link href={socials.github || '#'} aria-label="GitHub" target="_blank">
                   <Github className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
                 </Link>
               </Button>
-               <Button asChild variant="ghost" size="icon">
-                <Link href="#" aria-label="LinkedIn">
+               <Button asChild variant="ghost" size="icon" disabled={!socials.linkedin || socials.linkedin === '#'}>
+                <Link href={socials.linkedin || '#'} aria-label="LinkedIn" target="_blank">
                   <Linkedin className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
                 </Link>
               </Button>

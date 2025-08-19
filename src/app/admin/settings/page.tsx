@@ -10,7 +10,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Github, Linkedin, Loader2, Twitter } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -19,14 +19,26 @@ const settingsSchema = z.object({
   siteTitle: z.string().min(3, { message: "Site title must be at least 3 characters." }),
   metaDescription: z.string().min(10, { message: "Meta description must be at least 10 characters." }),
   siteUrl: z.string().url({ message: "Please enter a valid URL." }),
+  metaKeywords: z.string().min(3, { message: "Please enter at least one keyword." }),
+  social: z.object({
+      twitter: z.string().url({ message: "Please enter a valid Twitter URL." }).or(z.literal('')).optional(),
+      github: z.string().url({ message: "Please enter a valid GitHub URL." }).or(z.literal('')).optional(),
+      linkedin: z.string().url({ message: "Please enter a valid LinkedIn URL." }).or(z.literal('')).optional(),
+  }),
 });
 
-type SettingsFormValues = z.infer<typeof settingsSchema>;
+export type SettingsFormValues = z.infer<typeof settingsSchema>;
 
-const defaultSettings = {
+const defaultSettings: SettingsFormValues = {
     siteTitle: 'FireBlog - A Modern Blog Template',
     metaDescription: 'A clean and modern blog template built with Next.js and Firebase.',
-    siteUrl: 'http://localhost:9002'
+    siteUrl: 'http://localhost:9002',
+    metaKeywords: 'blog, nextjs, firebase, web development',
+    social: {
+        twitter: '#',
+        github: '#',
+        linkedin: '#'
+    }
 };
 
 export default function SettingsPage() {
@@ -154,6 +166,62 @@ export default function SettingsPage() {
                                 <FormMessage />
                                 </FormItem>
                             )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="metaKeywords"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Meta Keywords</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="e.g. tech, programming, startups" {...field} />
+                                </FormControl>
+                                <FormDescription>Comma-separated keywords for search engine optimization.</FormDescription>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        
+                        <h3 className="text-lg font-medium pt-4 border-t">Social Links</h3>
+                        
+                        <FormField
+                          control={form.control}
+                          name="social.twitter"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="flex items-center gap-2"><Twitter/> Twitter URL (Optional)</FormLabel>
+                              <FormControl>
+                                <Input placeholder="https://twitter.com/username" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                         <FormField
+                          control={form.control}
+                          name="social.github"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="flex items-center gap-2"><Github /> GitHub URL (Optional)</FormLabel>
+                              <FormControl>
+                                <Input placeholder="https://github.com/username" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                         <FormField
+                          control={form.control}
+                          name="social.linkedin"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="flex items-center gap-2"><Linkedin /> LinkedIn URL (Optional)</FormLabel>
+                              <FormControl>
+                                <Input placeholder="https://linkedin.com/in/username" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
                         <Button type="submit" disabled={isSubmitting}>
                              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
