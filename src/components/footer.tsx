@@ -78,7 +78,7 @@ export function Footer() {
                 </Link>
               </Button>
                <Button asChild variant="ghost" size="icon">
-                <Link href="#" aria-label="RSS Feed">
+                <Link href="/rss.xml" aria-label="RSS Feed" target="_blank">
                   <Rss className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
                 </Link>
               </Button>

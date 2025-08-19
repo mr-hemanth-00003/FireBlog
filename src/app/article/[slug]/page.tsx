@@ -17,6 +17,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Share2 } from 'lucide-react';
 import { ShareButton } from '@/components/share-button';
 import { format } from 'date-fns';
+import { SettingsFormValues } from '@/app/admin/settings/page';
+
 
 type Props = {
   params: { slug: string };
@@ -38,6 +40,19 @@ async function getPost(slug: string): Promise<Post | null> {
   }
 }
 
+async function getSettings(): Promise<SettingsFormValues | null> {
+    try {
+        const settingsDoc = await getDoc(doc(db, 'settings', 'site'));
+        if (settingsDoc.exists()) {
+            return settingsDoc.data() as SettingsFormValues;
+        }
+    } catch (error) {
+        console.error("Failed to fetch settings:", error);
+    }
+    return null;
+}
+
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPost(params.slug);
 
@@ -55,13 +70,45 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArticlePage({ params }: Props) {
   const post = await getPost(params.slug);
+  const settings = await getSettings();
 
   if (!post) {
     notFound();
   }
+  
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${settings?.siteUrl}/article/${post.slug}`,
+    },
+    headline: post.title,
+    description: post.excerpt,
+    image: post.imageUrl,
+    author: {
+      '@type': 'Person',
+      name: post.author.name,
+      url: settings?.siteUrl, // A profile page URL if you have one
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: settings?.siteTitle || 'FireBlog',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${settings?.siteUrl}/favicon.ico`, // URL to your site's logo
+      },
+    },
+    datePublished: post.publishDate,
+    dateModified: post.lastModifiedBy ? new Date().toISOString() : post.publishDate,
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <main className="flex-grow py-8 md:py-12">
         <article className="animate-fade-in-up">
