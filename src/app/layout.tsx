@@ -53,6 +53,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <LiveMetadata />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#FFFFFF" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
