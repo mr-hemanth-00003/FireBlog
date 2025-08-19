@@ -11,6 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const settingsSchema = z.object({
   siteTitle: z.string().min(3, { message: "Site title must be at least 3 characters." }),
@@ -20,26 +23,81 @@ const settingsSchema = z.object({
 
 type SettingsFormValues = z.infer<typeof settingsSchema>;
 
+const defaultSettings = {
+    siteTitle: 'FireBlog - A Modern Blog Template',
+    metaDescription: 'A clean and modern blog template built with Next.js and Firebase.',
+    siteUrl: 'http://localhost:9002'
+};
+
 export default function SettingsPage() {
   const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
-    defaultValues: {
-        siteTitle: 'FireBlog - A Modern Blog Template',
-        metaDescription: 'A clean and modern blog template built with Next.js and Firebase.',
-        siteUrl: 'http://localhost:9002'
-    }
+    defaultValues: defaultSettings,
   });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+        try {
+            const settingsDoc = await getDoc(doc(db, 'settings', 'site'));
+            if (settingsDoc.exists()) {
+                form.reset(settingsDoc.data() as SettingsFormValues);
+            }
+        } catch (error) {
+            console.error("Error fetching settings: ", error);
+            toast({
+                title: 'Error',
+                description: 'Could not load site settings.',
+                variant: 'destructive',
+            })
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchSettings();
+  }, [form, toast]);
   
   const { isSubmitting } = form.formState;
 
   async function onSubmit(values: SettingsFormValues) {
-    console.log('Saving settings:', values);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast({
-      title: "Settings Saved",
-      description: "Your changes have been saved successfully.",
-    });
+    try {
+        await setDoc(doc(db, 'settings', 'site'), values);
+        toast({
+            title: "Settings Saved",
+            description: "Your changes have been saved successfully.",
+        });
+    } catch (error) {
+        console.error('Error saving settings: ', error);
+        toast({
+            title: 'Error',
+            description: 'Failed to save settings. Please try again.',
+            variant: 'destructive',
+        });
+    }
+  }
+
+  if (loading) {
+    return (
+         <div className="flex-1 space-y-4">
+             <div className="flex items-center justify-between space-y-2">
+                <h2 className="text-3xl font-bold tracking-tight">Settings</h2>
+            </div>
+             <Card>
+                <CardHeader>
+                    <CardTitle>Site Settings</CardTitle>
+                    <CardDescription>Manage your blog's general and SEO settings.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="flex items-center space-x-2">
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        <span>Loading settings...</span>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    )
   }
 
   return (
