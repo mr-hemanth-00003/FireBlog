@@ -25,7 +25,6 @@ export function ShareButton({ post }: ShareButtonProps) {
       try {
         await navigator.share(shareData);
       } catch (error) {
-        console.error('Error sharing:', error);
         // User cancelled share, no need to show an error
       }
     } else {
