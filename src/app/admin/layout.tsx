@@ -277,7 +277,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   if (!user && pathname === '/admin/login') {
-      return <>{children}</>
+      return <>
+        <title>Login | FireBlog Admin</title>
+        {children}
+      </>
   }
 
   if(user) {

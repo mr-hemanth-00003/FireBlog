@@ -5,11 +5,27 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { SettingsFormValues } from '../admin/settings/page';
 
-export const metadata: Metadata = {
-  title: 'Privacy Policy | FireBlog',
-  description: 'Privacy Policy for FireBlog.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  let siteTitle = 'FireBlog';
+  try {
+    const settingsDoc = await getDoc(doc(db, 'settings', 'site'));
+    if (settingsDoc.exists()) {
+      const settings = settingsDoc.data() as SettingsFormValues;
+      siteTitle = settings.siteTitle;
+    }
+  } catch (error) {
+    console.error("Failed to fetch settings for metadata:", error);
+  }
+  
+  return {
+    title: `Privacy Policy | ${siteTitle}`,
+    description: `Privacy Policy for ${siteTitle}.`,
+  };
+}
 
 export default function PrivacyPolicyPage() {
   return (

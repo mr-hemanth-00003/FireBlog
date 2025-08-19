@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Header } from '@/components/header';
@@ -8,12 +9,9 @@ import { Github, Twitter, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
+import { SettingsFormValues } from '../admin/settings/page';
 
-export const metadata: Metadata = {
-  title: 'About Us | FireBlog',
-  description: 'Learn more about the team and mission behind FireBlog.',
-};
 
 interface TeamMember {
     id: string;
@@ -36,6 +34,24 @@ async function getTeamMembers(): Promise<TeamMember[]> {
         return [];
     }
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as TeamMember));
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  let siteTitle = 'FireBlog';
+  try {
+    const settingsDoc = await getDoc(doc(db, 'settings', 'site'));
+    if (settingsDoc.exists()) {
+      const settings = settingsDoc.data() as SettingsFormValues;
+      siteTitle = settings.siteTitle;
+    }
+  } catch (error) {
+    console.error("Failed to fetch settings for metadata:", error);
+  }
+  
+  return {
+    title: `About Us | ${siteTitle}`,
+    description: 'Learn more about the team and mission behind FireBlog.',
+  };
 }
 
 export default async function AboutPage() {
