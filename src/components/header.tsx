@@ -42,7 +42,7 @@ export function Header({}: HeaderProps) {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 md:hidden">
           <Button variant="ghost" size="icon" onClick={toggleMenu} aria-label="Toggle menu">
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
