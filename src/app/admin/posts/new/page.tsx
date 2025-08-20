@@ -6,7 +6,7 @@ import { PostForm } from '@/components/post-form';
 import type { Post } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { db, auth } from '@/lib/firebase';
-import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function NewPostPage() {
   const router = useRouter();

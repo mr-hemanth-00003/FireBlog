@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
             <h1>Privacy Policy for FireBlog</h1>
             <p><strong>Last Updated: {new Date().toLocaleDateString()}</strong></p>
             
-            <p>Welcome to FireBlog ("we," "our," or "us"). We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website.</p>
+            <p>Welcome to FireBlog (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website.</p>
             
             <h2>1. Information We Collect</h2>
             <p>We may collect information about you in a variety of ways. The information we may collect on the Site includes:</p>

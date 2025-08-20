@@ -16,7 +16,6 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Calendar } from './ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import React from 'react';
 
 const formSchema = z.object({
   title: z.string().min(5, { message: 'Title must be at least 5 characters long.' }),
@@ -32,8 +31,6 @@ const formSchema = z.object({
   isArchived: z.boolean().default(false),
   publishDate: z.date(),
 });
-
-type FormValues = Omit<Post, 'slug' | 'publishDate' | 'tags'> & { tags: string; publishDate: Date };
 
 interface PostFormProps {
   onSubmit: (data: Omit<Post, 'slug'>) => Promise<void>;

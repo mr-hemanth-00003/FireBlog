@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
@@ -34,7 +35,7 @@ export default function TagPage() {
       <Header />
       <main id="main" className="flex-grow">
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
-          <h1 className="text-3xl md:text-4xl font-bold font-headline mb-6">Posts tagged "{decodeURIComponent(tag)}"</h1>
+          <h1 className="text-3xl md:text-4xl font-bold font-headline mb-6">Posts tagged &quot;{decodeURIComponent(tag)}&quot;</h1>
           {loading ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -56,5 +57,3 @@ export default function TagPage() {
     </div>
   );
 }
-
-

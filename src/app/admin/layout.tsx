@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import * as React from 'react';
@@ -10,7 +9,6 @@ import {
   Sidebar, 
   SidebarHeader,
   SidebarContent,
-  SidebarFooter,
   SidebarTrigger,
   SidebarMenu,
   SidebarMenuItem,
@@ -18,12 +16,8 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarInset,
-  useSidebar
 } from '@/components/ui/sidebar';
-import { Feather, LayoutDashboard, FileText, Settings, Archive, Home, LogOut, Loader2, MessageSquare, Users } from 'lucide-react';
+import { Feather, LayoutDashboard, FileText, Settings, Home, LogOut, Loader2, MessageSquare, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -37,7 +31,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { auth, db } from '@/lib/firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { collection, onSnapshot, query, where, Timestamp } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 interface AdminLayoutProps {
   children: React.ReactNode;

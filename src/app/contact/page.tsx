@@ -15,7 +15,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Mail, Send, Loader2 } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
-import type { Metadata } from 'next';
 import type { Settings } from '@/types/settings';
 import { useEffect, useState } from 'react';
 

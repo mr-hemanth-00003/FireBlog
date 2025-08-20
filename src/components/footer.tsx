@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { Feather, Github, Twitter, Linkedin, Rss } from 'lucide-react';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
 import { NewsletterForm } from './newsletter-form';
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';

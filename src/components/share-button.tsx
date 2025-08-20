@@ -1,7 +1,6 @@
 
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Share2 } from 'lucide-react';
@@ -26,6 +25,7 @@ export function ShareButton({ post }: ShareButtonProps) {
         await navigator.share(shareData);
       } catch (error) {
         // User cancelled share, no need to show an error
+        console.log("Share cancelled", error);
       }
     } else {
       // Fallback for browsers that don't support Web Share API

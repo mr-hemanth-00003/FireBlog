@@ -109,7 +109,7 @@ export default function SettingsPage() {
              <Card>
                 <CardHeader>
                     <CardTitle>Site Settings</CardTitle>
-                    <CardDescription>Manage your blog's general and SEO settings.</CardDescription>
+                    <CardDescription>Manage your blog&apos;s general and SEO settings.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex items-center space-x-2">
@@ -130,7 +130,7 @@ export default function SettingsPage() {
          <Card className="glass-card">
             <CardHeader>
                 <CardTitle>Site Settings</CardTitle>
-                <CardDescription>Manage your blog's general and SEO settings.</CardDescription>
+                <CardDescription>Manage your blog&apos;s general and SEO settings.</CardDescription>
             </CardHeader>
             <CardContent>
                  <Form {...form}>

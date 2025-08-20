@@ -15,7 +15,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Search, Loader2 } from 'lucide-react';
 import { db } from '@/lib/firebase';
-import { collection, onSnapshot, query, orderBy, where, doc, getDoc } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, where, doc } from 'firebase/firestore';
 import type { Settings } from '@/types/settings';
 
 
