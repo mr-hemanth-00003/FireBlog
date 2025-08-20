@@ -1,13 +1,13 @@
 import { MetadataRoute } from 'next';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { SettingsFormValues } from './admin/settings/page';
+import type { Settings } from '@/types/settings';
 
 async function getSiteUrl(): Promise<string> {
     try {
         const settingsDoc = await getDoc(doc(db, 'settings', 'site'));
         if (settingsDoc.exists()) {
-            const settings = settingsDoc.data() as SettingsFormValues;
+            const settings = settingsDoc.data() as Settings;
             return settings.siteUrl;
         }
     } catch (error) {

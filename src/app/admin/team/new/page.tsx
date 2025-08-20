@@ -37,7 +37,9 @@ export default function NewTeamMemberPage() {
         <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Add New Team Member</h2>
         </div>
-        <TeamMemberForm onSubmit={handleSubmit} />
+        <div className="glass-card rounded-xl p-4">
+          <TeamMemberForm onSubmit={handleSubmit} />
+        </div>
     </div>
   );
 }

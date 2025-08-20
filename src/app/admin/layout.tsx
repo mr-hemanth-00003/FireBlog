@@ -136,11 +136,14 @@ function UserMenu({ user }: { user: User | null }) {
 function AdminHeader({ user }: { user: User | null }) {
     const { isMobile } = useSidebar();
     return (
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+        <header className="flex h-14 items-center gap-4 border-b bg-card/60 backdrop-blur-xl px-4 lg:h-[60px] lg:px-6">
             {isMobile && <SidebarTrigger />}
             <div className="w-full flex-1">
                 {/* Optional: Add search bar here later */}
             </div>
+            <Link href="/admin/posts/new" className="hidden md:block">
+              <Button variant="gradient" size="sm">New Post</Button>
+            </Link>
             <UserMenu user={user} />
         </header>
     )
@@ -150,7 +153,7 @@ function AdminSidebar() {
     const pathname = usePathname();
 
     return (
-        <Sidebar>
+        <Sidebar variant="floating">
             <SidebarHeader>
                 <Link href="/admin/dashboard" className="flex items-center gap-2 font-semibold">
                     <Feather className="h-6 w-6 text-primary" />
@@ -286,7 +289,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   if(user) {
     return (
         <SidebarProvider>
-            <div className="flex min-h-screen w-full">
+            <div className="flex min-h-screen w-full animate-fade-in">
                 <AdminSidebar />
                 <div className="flex flex-col flex-1">
                     <AdminHeader user={user}/>

@@ -79,7 +79,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
+            <Card className="glass-card">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
@@ -89,7 +89,7 @@ export default function DashboardPage() {
                 <p className="text-xs text-muted-foreground">articles currently published</p>
                 </CardContent>
             </Card>
-            <Card>
+            <Card className="glass-card">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Visitors (24h)</CardTitle>
                 <Eye className="h-4 w-4 text-muted-foreground" />
@@ -99,7 +99,7 @@ export default function DashboardPage() {
                 <p className="text-xs text-muted-foreground">unique visitors in last 24h</p>
                 </CardContent>
             </Card>
-            <Card>
+            <Card className="glass-card">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Tags</CardTitle>
                 <Tag className="h-4 w-4 text-muted-foreground" />
@@ -109,7 +109,7 @@ export default function DashboardPage() {
                 <p className="text-xs text-muted-foreground">unique tags used</p>
                 </CardContent>
             </Card>
-             <Card>
+             <Card className="glass-card">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Team Members</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
@@ -123,9 +123,9 @@ export default function DashboardPage() {
         
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
             <div className="col-span-12 lg:col-span-4">
-                 {loading ? <Card><CardContent className="pt-6">Loading chart...</CardContent></Card> : <PostsChart posts={posts} />}
+                 {loading ? <Card className="glass-card"><CardContent className="pt-6">Loading chart...</CardContent></Card> : <PostsChart posts={posts} />}
             </div>
-            <Card className="col-span-12 lg:col-span-3">
+            <Card className="col-span-12 lg:col-span-3 glass-card">
                 <CardHeader>
                      <CardTitle>Recent Activity</CardTitle>
                 </CardHeader>

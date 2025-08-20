@@ -52,7 +52,9 @@ export default function NewPostPage() {
         <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Create New Post</h2>
         </div>
-        <PostForm onSubmit={handleSubmit} />
+        <div className="glass-card rounded-xl p-4">
+          <PostForm onSubmit={handleSubmit} />
+        </div>
     </div>
   );
 }

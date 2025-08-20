@@ -16,7 +16,7 @@ import { Mail, Send, Loader2 } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
 import type { Metadata } from 'next';
-import { SettingsFormValues } from '../admin/settings/page';
+import type { Settings } from '@/types/settings';
 import { useEffect, useState } from 'react';
 
 const formSchema = z.object({
@@ -61,7 +61,7 @@ function ContactForm() {
   }
 
   return (
-    <Card className="shadow-2xl">
+    <Card className="shadow-2xl glass-card">
       <CardHeader className="text-center">
         <div className="mx-auto bg-primary/10 p-4 rounded-full w-fit mb-4">
             <Mail className="h-10 w-10 text-primary" />
@@ -140,7 +140,7 @@ export default function ContactPage() {
   useEffect(() => {
     getDoc(doc(db, 'settings', 'site')).then(docSnap => {
       if (docSnap.exists()) {
-        const settings = docSnap.data() as SettingsFormValues;
+        const settings = docSnap.data() as Settings;
         setSiteTitle(settings.siteTitle);
       }
     })

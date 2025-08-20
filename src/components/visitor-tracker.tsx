@@ -3,7 +3,7 @@
 
 import { useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
 
 // A simple UUID generator
 function generateUUID() {

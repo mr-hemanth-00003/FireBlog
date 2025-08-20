@@ -103,14 +103,14 @@ export default function PostsPage() {
 
   return (
     <>
-      <Card>
+      <Card className="glass-card">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Published Posts</CardTitle>
               <CardDescription>Manage your published and scheduled articles.</CardDescription>
             </div>
-            <Button asChild>
+            <Button asChild variant="gradient">
               <Link href="/admin/posts/new">Create Post</Link>
             </Button>
           </div>

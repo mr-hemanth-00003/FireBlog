@@ -2,14 +2,14 @@
 import { db } from '@/lib/firebase';
 import { collection, query, where, orderBy, getDocs, doc, getDoc } from 'firebase/firestore';
 import { Post } from '@/lib/data';
-import { SettingsFormValues } from '@/app/admin/settings/page';
+import type { Settings } from '@/types/settings';
 import RSS from 'rss';
 
-async function getSettings(): Promise<SettingsFormValues | null> {
+async function getSettings(): Promise<Settings | null> {
     try {
         const settingsDoc = await getDoc(doc(db, 'settings', 'site'));
         if (settingsDoc.exists()) {
-            return settingsDoc.data() as SettingsFormValues;
+            return settingsDoc.data() as Settings;
         }
     } catch (error) {
         console.error("Failed to fetch settings for RSS feed:", error);
@@ -47,7 +47,7 @@ export async function GET() {
   );
   
   const snapshot = await getDocs(q);
-  const posts = snapshot.docs.map(doc => ({ ...doc.data() } as Post));
+  const posts = snapshot.docs.map(doc => ({ slug: doc.id, ...doc.data() } as Post));
 
   posts.forEach(post => {
     feed.item({
