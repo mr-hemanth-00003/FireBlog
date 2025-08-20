@@ -40,9 +40,6 @@ export function Header({}: HeaderProps) {
               {item.label}
             </Link>
           ))}
-          <Button asChild size="sm" variant="gradient" className="ml-2">
-            <Link href="#newsletter">Subscribe</Link>
-          </Button>
         </nav>
 
         <div className="flex items-center gap-2">
