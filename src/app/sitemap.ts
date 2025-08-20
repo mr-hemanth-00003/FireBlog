@@ -3,14 +3,14 @@ import { MetadataRoute } from 'next';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, where, orderBy, doc, getDoc } from 'firebase/firestore';
 import { Post } from '@/lib/data';
-import { SettingsFormValues } from './admin/settings/page';
+import type { Settings } from '@/types/settings';
 
 
 async function getSiteUrl(): Promise<string> {
     try {
         const settingsDoc = await getDoc(doc(db, 'settings', 'site'));
         if (settingsDoc.exists()) {
-            const settings = settingsDoc.data() as SettingsFormValues;
+            const settings = settingsDoc.data() as Settings;
             return settings.siteUrl;
         }
     } catch (error) {
@@ -39,5 +39,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(post.publishDate).toISOString(),
   }));
 
-  return [...staticRoutes, ...postRoutes];
+  const tagSet = new Set<string>();
+  posts.forEach(p => p.tags.forEach(t => tagSet.add(t)));
+  const tagRoutes = Array.from(tagSet).map(tag => ({
+    url: `${SITE_URL}/tag/${encodeURIComponent(tag)}`,
+    lastModified: new Date().toISOString(),
+  }));
+
+  return [...staticRoutes, ...postRoutes, ...tagRoutes];
 }

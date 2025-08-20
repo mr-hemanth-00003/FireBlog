@@ -127,7 +127,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Settings</h2>
         </div>
-         <Card>
+         <Card className="glass-card">
             <CardHeader>
                 <CardTitle>Site Settings</CardTitle>
                 <CardDescription>Manage your blog's general and SEO settings.</CardDescription>

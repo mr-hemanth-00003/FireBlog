@@ -1,18 +1,14 @@
 
 'use client';
 
-import { useState, useEffect, use } from 'react';
-import { notFound, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { notFound, useRouter, useParams } from 'next/navigation';
 import { PostForm } from '@/components/post-form';
 import type { Post } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { db, auth } from '@/lib/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
-
-interface EditPostPageProps {
-  params: Promise<{ slug: string }>;
-}
 
 function EditPostForm({ slug }: { slug: string }) {
   const router = useRouter();
@@ -82,13 +78,15 @@ function EditPostForm({ slug }: { slug: string }) {
         <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Edit Post</h2>
         </div>
-        <PostForm onSubmit={handleSubmit} defaultValues={post} />
+        <div className="glass-card rounded-xl p-4">
+          <PostForm onSubmit={handleSubmit} defaultValues={post} />
+        </div>
     </div>
   );
 }
 
 
-export default function EditPostPage({ params }: EditPostPageProps) {
-  const { slug } = use(params);
-  return <EditPostForm slug={slug} />;
+export default function EditPostPage() {
+  const params = useParams<{ slug: string }>();
+  return <EditPostForm slug={params.slug} />;
 }

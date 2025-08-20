@@ -3,10 +3,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Head from 'next/head';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { ArticleCard } from '@/components/article-card';
+import { Hero } from '@/components/hero';
+import { TagsScroller } from '@/components/tags-scroller';
 import { Post } from '@/lib/data';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -15,14 +16,14 @@ import { Input } from '@/components/ui/input';
 import { Search, Loader2 } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, orderBy, where, doc, getDoc } from 'firebase/firestore';
-import { SettingsFormValues } from './admin/settings/page';
+import type { Settings } from '@/types/settings';
 
 
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [settings, setSettings] = useState<SettingsFormValues | null>(null);
+  const [settings, setSettings] = useState<Settings | null>(null);
   const router = useRouter();
   
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function Home() {
 
     const settingsUnsub = onSnapshot(doc(db, 'settings', 'site'), (doc) => {
       if (doc.exists()) {
-        setSettings(doc.data() as SettingsFormValues);
+        setSettings(doc.data() as Settings);
       }
     });
 
@@ -92,20 +93,21 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        {websiteSchema && (
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-            />
-        )}
-      </Head>
       <div className="flex flex-col min-h-screen bg-background">
         <Header />
-        <main className="flex-grow">
-          <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
+        <main id="main" className="flex-grow">
+          <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 animate-fade-in">
+            <div className="mb-8">
+              <Hero />
+            </div>
+            {websiteSchema && (
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+              />
+            )}
 
-            <section className="mb-8">
+            <section className="mb-8 animate-fade-in-up">
               <div className="flex w-full items-center space-x-2">
                 <div className="relative flex-grow">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -125,11 +127,9 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Ad Placeholder */}
-            <Card className="mb-8 p-4 text-center animate-fade-in">
-              <p className="text-sm text-muted-foreground tracking-widest">ADVERTISEMENT</p>
-              {/* <!-- Ad Placeholder 1 --> */}
-            </Card>
+            <div className="my-8">
+              <TagsScroller tags={posts.flatMap(p => p.tags)} />
+            </div>
 
             {posts.length === 0 && !loading && (
               <div className="text-center">
@@ -170,11 +170,13 @@ export default function Home() {
               <section className="animate-fade-in-up animation-delay-400">
                 <h2 className="text-2xl md:text-3xl font-bold mb-8 font-headline text-center">Latest Posts</h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {otherPosts.map((post) => (
-                    <ArticleCard key={post.slug} post={post} />
+                  {otherPosts.map((post, index) => (
+                    <div key={post.slug} className={`animate-fade-in-up`} style={{ animationDelay: `${(index % 6) * 80}ms` }}>
+                      <ArticleCard post={post} />
+                    </div>
                   ))}
                    {/* Ad Placeholder 2 - In Grid */}
-                  <Card className="hidden lg:flex flex-col items-center justify-center p-4">
+                  <Card className="hidden lg:flex flex-col items-center justify-center p-4 animate-fade-in animation-delay-600">
                       <p className="text-sm text-muted-foreground tracking-widest">ADVERTISEMENT</p>
                       {/* <!-- Ad Placeholder 2 --> */}
                   </Card>
@@ -183,7 +185,7 @@ export default function Home() {
             )}
 
               {/* Ad Placeholder 2 mobile */}
-             <Card className="mt-8 p-4 text-center lg:hidden">
+             <Card className="mt-8 p-4 text-center lg:hidden animate-fade-in animation-delay-600">
               <p className="text-sm text-muted-foreground tracking-widest">ADVERTISEMENT</p>
               {/* <!-- Ad Placeholder 2 --> */}
             </Card>

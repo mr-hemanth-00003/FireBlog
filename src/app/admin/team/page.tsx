@@ -88,14 +88,14 @@ export default function TeamPage() {
 
   return (
     <>
-      <Card>
+      <Card className="glass-card">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Team Members</CardTitle>
               <CardDescription>Manage your team members for the about page.</CardDescription>
             </div>
-            <Button asChild>
+            <Button asChild variant="gradient">
               <Link href="/admin/team/new">Add Member</Link>
             </Button>
           </div>

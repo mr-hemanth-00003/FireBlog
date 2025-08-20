@@ -34,7 +34,7 @@ export function ArticleCard({ post, hideContent = false }: ArticleCardProps) {
   }
 
   return (
-    <Card className="flex flex-col overflow-hidden h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <Card className="flex flex-col overflow-hidden h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1 animate-fade-in glass-card">
       <CardHeader className="p-0 border-b">
         <Link href={`/article/${post.slug}`} className="block overflow-hidden" aria-label={`Read more about ${post.title}`}>
           <Image

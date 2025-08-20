@@ -7,14 +7,14 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { SettingsFormValues } from '../admin/settings/page';
+import type { Settings } from '@/types/settings';
 
 export async function generateMetadata(): Promise<Metadata> {
   let siteTitle = 'FireBlog';
   try {
     const settingsDoc = await getDoc(doc(db, 'settings', 'site'));
     if (settingsDoc.exists()) {
-      const settings = settingsDoc.data() as SettingsFormValues;
+      const settings = settingsDoc.data() as Settings;
       siteTitle = settings.siteTitle;
     }
   } catch (error) {

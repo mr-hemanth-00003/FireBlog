@@ -101,7 +101,7 @@ export default function ArchivedPostsPage() {
 
   return (
     <>
-      <Card>
+      <Card className="glass-card">
         <CardHeader>
           <CardTitle>Archived Posts</CardTitle>
           <CardDescription>Manage your archived articles.</CardDescription>

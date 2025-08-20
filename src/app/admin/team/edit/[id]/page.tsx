@@ -1,17 +1,13 @@
 
 'use client';
 
-import { useState, useEffect, use } from 'react';
-import { notFound, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { notFound, useRouter, useParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { db } from '@/lib/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { TeamMemberForm, TeamMemberFormValues } from '../../team-member-form';
-
-interface EditTeamMemberPageProps {
-  params: Promise<{ id: string }>;
-}
 
 interface TeamMember extends TeamMemberFormValues {
     id: string;
@@ -80,13 +76,15 @@ function EditTeamMemberForm({ id }: { id: string }) {
         <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Edit Team Member</h2>
         </div>
-        <TeamMemberForm onSubmit={handleSubmit} defaultValues={member} />
+        <div className="glass-card rounded-xl p-4">
+          <TeamMemberForm onSubmit={handleSubmit} defaultValues={member} />
+        </div>
     </div>
   );
 }
 
 
-export default function EditTeamMemberPage({ params }: EditTeamMemberPageProps) {
-  const { id } = use(params);
-  return <EditTeamMemberForm id={id} />;
+export default function EditTeamMemberPage() {
+  const params = useParams<{ id: string }>();
+  return <EditTeamMemberForm id={params.id} />;
 }

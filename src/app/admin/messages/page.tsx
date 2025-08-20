@@ -89,7 +89,7 @@ export default function MessagesPage() {
 
   return (
     <>
-      <Card>
+      <Card className="glass-card">
         <CardHeader>
           <CardTitle>Contact Messages</CardTitle>
           <CardDescription>Here are the messages submitted through your contact form.</CardDescription>
