@@ -167,7 +167,7 @@ export default function Home() {
             
             {/* Latest Posts */}
             {otherPosts.length > 0 && (
-              <section className="animate-fade-in-up animation-delay-400">
+              <section id="latest" className="animate-fade-in-up animation-delay-400">
                 <h2 className="text-2xl md:text-3xl font-bold mb-8 font-headline text-center">Latest Posts</h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {otherPosts.map((post, index) => (
