@@ -1,11 +1,10 @@
-
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { VisitorTracker } from '@/components/visitor-tracker';
 import { ScrollToTop } from '@/components/scroll-to-top';
 import type { Viewport } from 'next';
 import { LiveMetadata } from '@/components/live-metadata';
-
+import { ptSans, sourceCodePro } from '@/lib/fonts';
 
 export const viewport: Viewport = {
   themeColor: '#FFFFFF',
@@ -15,15 +14,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={`${ptSans.variable} ${sourceCodePro.variable} dark`}>
       <head>
         <LiveMetadata />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="manifest" href="/manifest.json" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet" />
         <meta name="color-scheme" content="dark" />
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3347120637586448" crossOrigin="anonymous"></script>
       </head>

@@ -55,7 +55,7 @@ export async function GET() {
       description: post.excerpt,
       url: `${settings.siteUrl}/article/${post.slug}`,
       guid: post.slug,
-      author: post.author.name,
+      author: post.author?.name || 'Admin',
       date: post.publishDate,
       enclosure: {
         url: post.imageUrl,

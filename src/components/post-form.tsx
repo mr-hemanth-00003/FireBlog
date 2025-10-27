@@ -23,10 +23,6 @@ const formSchema = z.object({
   content: z.string().min(50, { message: 'Content must be at least 50 characters long.' }),
   imageUrl: z.string().url({ message: 'Please enter a valid image URL.' }),
   imageHint: z.string().max(20, { message: "Hint can't be more than two words."}),
-  author: z.object({
-    name: z.string().min(2, { message: "Author's name is required." }),
-    avatarUrl: z.string().url({ message: 'Please enter a valid avatar URL.' }),
-  }),
   tags: z.string().min(1, { message: 'Please enter at least one tag.' }),
   isArchived: z.boolean().default(false),
   publishDate: z.date(),
@@ -46,10 +42,6 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
       content: defaultValues?.content || '',
       imageUrl: defaultValues?.imageUrl || '',
       imageHint: defaultValues?.imageHint || '',
-      author: {
-        name: defaultValues?.author?.name || 'Admin',
-        avatarUrl: defaultValues?.author?.avatarUrl || 'https://placehold.co/40x40.png',
-      },
       tags: defaultValues?.tags?.join(', ') || '',
       isArchived: defaultValues?.isArchived || false,
       publishDate: defaultValues?.publishDate ? new Date(defaultValues.publishDate) : new Date(),
@@ -61,6 +53,10 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     const postData = {
       ...values,
+      author: {
+        name: 'Admin',
+        avatarUrl: 'https://placehold.co/40x40.png'
+      },
       publishDate: values.publishDate.toISOString(),
       tags: values.tags.split(',').map(tag => tag.trim()),
     };
@@ -250,32 +246,6 @@ export function PostForm({ onSubmit, defaultValues }: PostFormProps) {
                 <Input placeholder="e.g. 'tech code'" {...field} />
               </FormControl>
               <FormDescription>One or two keywords for the AI image search.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="author.name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Author Name</FormLabel>
-              <FormControl>
-                <Input placeholder="John Doe" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-         <FormField
-          control={form.control}
-          name="author.avatarUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Author Avatar URL</FormLabel>
-              <FormControl>
-                <Input placeholder="https://placehold.co/40x40.png" {...field} />
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}

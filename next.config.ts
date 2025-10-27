@@ -6,8 +6,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  eslint: {
-    ignoreDuringBuilds: false,
+  // Set the root directory for Turbopack
+  turbopack: {
+    root: '.'
   },
   images: {
     remotePatterns: [

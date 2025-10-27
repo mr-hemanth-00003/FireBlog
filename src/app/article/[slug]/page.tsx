@@ -6,12 +6,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import type { Post } from '@/lib/data';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import type { Post } from '@/lib/data';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
@@ -70,7 +69,7 @@ export default function ArticlePage() {
       image: post.imageUrl,
       author: {
         '@type': 'Person',
-        name: post.author.name,
+        name: post.author?.name || 'Admin',
         url: settings?.siteUrl,
       },
       publisher: {
@@ -125,15 +124,7 @@ export default function ArticlePage() {
                   <h1 className="text-3xl md:text-5xl font-bold font-headline leading-tight mb-4">
                     {post.title}
                   </h1>
-                  <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground mb-6">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />
-                        <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <span>{post.author.name}</span>
-                    </div>
-                    <span>&middot;</span>
+                  <div className="flex items-center justify-center text-sm text-muted-foreground mb-6">
                     <time dateTime={post.publishDate}>{format(new Date(post.publishDate), 'PPp')}</time>
                   </div>
                 </header>

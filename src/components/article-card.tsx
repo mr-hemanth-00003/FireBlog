@@ -3,7 +3,6 @@ import type { Post } from '@/lib/data';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from './ui/button';
 import { ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
@@ -59,12 +58,7 @@ export function ArticleCard({ post, hideContent = false }: ArticleCardProps) {
       </CardContent>
       <CardFooter className="p-6 pt-0 flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={post.author.avatarUrl} alt={post.author.name} />
-            <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
-          </Avatar>
           <div>
-            <p className="text-sm font-medium">{post.author.name}</p>
             <p className="text-xs text-muted-foreground">{format(new Date(post.publishDate), "PP")}</p>
           </div>
         </div>

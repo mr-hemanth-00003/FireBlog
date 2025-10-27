@@ -139,7 +139,7 @@ export default function DashboardPage() {
                                         <Link href={`/article/${post.slug}`} className="font-medium hover:underline text-sm" target="_blank">
                                             {post.title}
                                         </Link>
-                                        <p className="text-xs text-muted-foreground">{post.author.name}</p>
+                                        <p className="text-xs text-muted-foreground">{post.author?.name || 'Admin'}</p>
                                     </div>
                                     <Button asChild variant="outline" size="sm">
                                         <Link href={`/admin/posts/edit/${post.slug}`}>

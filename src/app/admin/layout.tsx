@@ -16,6 +16,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
+  useSidebar
 } from '@/components/ui/sidebar';
 import { Feather, LayoutDashboard, FileText, Settings, Home, LogOut, Loader2, MessageSquare, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';

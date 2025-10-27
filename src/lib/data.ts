@@ -1,4 +1,3 @@
-
 export interface Post {
   slug: string;
   title: string;
@@ -6,7 +5,7 @@ export interface Post {
   content: string;
   imageUrl: string;
   imageHint: string;
-  author: {
+  author?: {
     name: string;
     avatarUrl: string;
   };

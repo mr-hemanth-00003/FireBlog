@@ -39,7 +39,7 @@ export function LiveMetadata() {
     
     // Simple title case for other routes
     const pageName = pathname.split('/').filter(Boolean).pop()?.replace(/-/g, ' ');
-    const formattedPageName = pageName?.charAt(0).toUpperCase() + pageName?.slice(1);
+    const formattedPageName = pageName ? pageName.charAt(0).toUpperCase() + pageName.slice(1) : '';
     
     return `${formattedPageName} | ${settings.siteTitle}`;
   }
